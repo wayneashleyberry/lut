@@ -6,6 +6,8 @@
 
 I wrote this command-line tool and package to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
 
+Currently only 512px by 512px LUT's are supported — future work might be done to support other dimenions.
+
 ### Example
 
 ```sh
