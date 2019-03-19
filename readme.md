@@ -12,23 +12,23 @@ I wrote this command-line tool and package to inspect LUT's locally, and provide
 go run main.go apply testdata/sample.jpg --lut testdata/filter.png --out testdata/output.jpg
 ```
 
-| Input                                                                                     | LUT                                                                                       | Output                                                                                    |
-| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| ![...](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/sample.jpg) | ![...](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/filter.png) | ![...](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/output.jpg) |
+| Input                                                                                                     | LUT                                                                                                  | Output                                                                                           |
+| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| ![an unfiltered image](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/sample.jpg) | ![a lookup table](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/filter.png) | ![the result](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/output.jpg) |
 
 ### Usage
 
 ```
 Usage:
-lut [flags]
-lut [command]
+  lut [flags]
+  lut [command]
 
 Available Commands:
-apply Adjust image colour according to a LUT
-help Help about any command
+  apply       Adjust image colour according to a LUT
+  help        Help about any command
 
 Flags:
--h, --help help for lut
+  -h, --help   help for lut
 
 Use "lut [command] --help" for more information about a command.
 ```
