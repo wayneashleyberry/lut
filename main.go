@@ -18,7 +18,7 @@ func main() {
 	cmd := &cobra.Command{
 		Use: "lut",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Usage()
+			_ = cmd.Usage()
 		},
 	}
 
@@ -51,10 +51,10 @@ func main() {
 	}
 
 	apply.Flags().StringVarP(&lutfile, "lut", "", "", "Path to LUT [required]")
-	apply.MarkFlagRequired("lut")
+	_ = apply.MarkFlagRequired("lut")
 
 	apply.Flags().StringVarP(&outfile, "out", "o", "", "Path to write output [required]")
-	apply.MarkFlagRequired("out")
+	_ = apply.MarkFlagRequired("out")
 
 	cmd.AddCommand(apply)
 
