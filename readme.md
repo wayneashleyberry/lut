@@ -36,6 +36,8 @@ Flags:
 Use "lut [command] --help" for more information about a command.
 ```
 
+[Binaries are available for you to download](https://github.com/wayneashleyberry/lut/releases/latest) if you don't want to [write Go code](https://golang.org/doc/code.html).
+
 ### Installation
 
 This project uses [Go modules](https://blog.golang.org/modules2019), so make sure to clone it outside of your `$GOPATH`. You will need at least Go 1.11.
