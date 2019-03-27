@@ -21,13 +21,14 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	})
 
 	space := &image.NRGBA{}
+	model := space.ColorModel()
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			// not all images use the same colour space, so ensure we convert
 			// them all to nrgba to be consistent with our output
 			px := src.At(x, y)
-			c := space.ColorModel().Convert(px).(color.NRGBA)
+			c := model.Convert(px).(color.NRGBA)
 
 			// find the location of the pixel in our lookup table
 			lutx := int((c.B/4%8)*64 + c.R/4)
