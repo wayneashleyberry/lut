@@ -20,9 +20,6 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 		return src, errors.New("intensity must be between 0 and 1")
 	}
 
-	// intensity := uint32(amount)
-	// fmt.Println(amount, intensity, 0xFFFFFFFF, intensity == 0xFFFFFFFF)
-
 	bounds := src.Bounds()
 
 	out := image.NewRGBA(image.Rectangle{
