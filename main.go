@@ -23,6 +23,7 @@ func main() {
 	}
 
 	var lutfile, outfile string
+	var intensity float64
 
 	apply := &cobra.Command{
 		Use:   "apply [source.png] --lut sepia.png --out image.png",
@@ -39,7 +40,7 @@ func main() {
 				exit(err)
 			}
 
-			img, err := lut.Apply(srcimg, lutimg)
+			img, err := lut.Apply(srcimg, lutimg, intensity)
 			if err != nil {
 				exit(err)
 			}
@@ -50,10 +51,11 @@ func main() {
 		},
 	}
 
+	apply.Flags().Float64VarP(&intensity, "intensity", "", 1, "Intensity of the applied effect")
 	apply.Flags().StringVarP(&lutfile, "lut", "", "", "Path to LUT [required]")
-	_ = apply.MarkFlagRequired("lut")
-
 	apply.Flags().StringVarP(&outfile, "out", "o", "", "Path to write output [required]")
+
+	_ = apply.MarkFlagRequired("lut")
 	_ = apply.MarkFlagRequired("out")
 
 	cmd.AddCommand(apply)
