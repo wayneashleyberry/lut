@@ -3,49 +3,45 @@ package lut
 import (
 	"errors"
 	"image"
+	"image/color"
 	"math"
 )
 
-type col32 struct {
-	R, G, B, A uint32
-}
-
-func (c col32) RGBA() (uint32, uint32, uint32, uint32) {
-	return c.R, c.G, c.B, c.A
-}
-
-// Apply implementation
+// Apply colour transformations to an image from the provided lookup table
 func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")
 	}
 
-	// intensity := uint32(amount)
-	// fmt.Println(amount, intensity, 0xFFFFFFFF, intensity == 0xFFFFFFFF)
-
 	bounds := src.Bounds()
 
-	out := image.NewRGBA(image.Rectangle{
+	out := image.NewNRGBA(image.Rectangle{
 		image.Point{0, 0},
 		image.Point{bounds.Max.X, bounds.Max.Y},
 	})
 
+	space := &image.NRGBA{}
+
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			r, g, b, a := src.At(x, y).RGBA()
-			rr, gg, bb := uint8(r/4>>8), uint8(g/4>>8), uint8(b/4>>8)
+			// not all images use the same colour space, so ensure we convert
+			// them all to nrgba to be consistent with our output
+			px := src.At(x, y)
+			converted := space.ColorModel().Convert(px)
+			c := converted.(color.NRGBA)
 
-			lutx := (bb%8)*64 + rr
-			luty := math.Floor(float64(bb)/8)*64 + float64(gg)
+			// find the location of the pixel in our lookup table
+			lutx := int((c.B/4%8)*64 + c.R/4)
+			luty := int(math.Floor(float64(c.B/4)/8)*64 + float64(c.G/4))
 
-			lut := effect.At(int(lutx), int(luty))
-			lr, lg, lb, _ := lut.RGBA()
+			lut := effect.At(lutx, luty).(color.RGBA)
 
-			o := col32{}
-			o.R = uint32(float64(r)*(1-intensity) + float64(lr)*intensity)
-			o.G = uint32(float64(g)*(1-intensity) + float64(lg)*intensity)
-			o.B = uint32(float64(b)*(1-intensity) + float64(lb)*intensity)
-			o.A = a
+			// create our output colour, adjusted according to the intensity
+			o := color.NRGBA{}
+			o.R = uint8(float64(c.R)*(1-intensity) + float64(lut.R)*intensity)
+			o.G = uint8(float64(c.G)*(1-intensity) + float64(lut.G)*intensity)
+			o.B = uint8(float64(c.B)*(1-intensity) + float64(lut.B)*intensity)
+			o.A = c.A
 
 			out.Set(x, y, o)
 		}
