@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/wayneashleyberry/lut/pkg/lut"
-	"github.com/wayneashleyberry/lut/pkg/split"
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
@@ -59,23 +58,7 @@ func main() {
 	_ = apply.MarkFlagRequired("lut")
 	_ = apply.MarkFlagRequired("out")
 
-	split := &cobra.Command{
-		Use:  "split [source.png]",
-		Args: cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
-			src, err := util.ReadImage(args[0])
-			if err != nil {
-				exit(err)
-			}
-
-			err = split.Image(src)
-			if err != nil {
-				exit(err)
-			}
-		},
-	}
-
-	cmd.AddCommand(apply, split)
+	cmd.AddCommand(apply)
 
 	if err := cmd.Execute(); err != nil {
 		fmt.Println(err)
