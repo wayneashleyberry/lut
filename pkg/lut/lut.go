@@ -7,14 +7,6 @@ import (
 	"math"
 )
 
-type col32 struct {
-	R, G, B, A uint32
-}
-
-func (c col32) RGBA() (uint32, uint32, uint32, uint32) {
-	return c.R, c.G, c.B, c.A
-}
-
 // Apply colour transformations to an image from the provided lookup table
 func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
