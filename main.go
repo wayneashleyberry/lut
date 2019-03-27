@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/wayneashleyberry/lut/pkg/cube"
 	"github.com/wayneashleyberry/lut/pkg/lut"
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
@@ -59,6 +60,21 @@ func main() {
 	_ = apply.MarkFlagRequired("out")
 
 	cmd.AddCommand(apply)
+
+	cmd.AddCommand(&cobra.Command{
+		Use:  "cube [source.png] [effect.cube] [out.png]",
+		Args: cobra.ExactArgs(3),
+		Run: func(cmd *cobra.Command, args []string) {
+			img, err := cube.Apply(args[0], args[1])
+			if err != nil {
+				exit(err)
+			}
+
+			if err := util.WriteImage(args[2], img); err != nil {
+				exit(err)
+			}
+		},
+	})
 
 	if err := cmd.Execute(); err != nil {
 		fmt.Println(err)
