@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/sgreben/piecewiselinear"
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
@@ -35,11 +34,6 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 	table := map[int][]float32{}
 
 	i := 0
-
-	xaxis := []float64{}
-	raxis := []float64{}
-	gaxis := []float64{}
-	baxis := []float64{}
 
 	for _, line := range strings.Split(file, "\n") {
 		if strings.HasPrefix(line, "#") {
@@ -75,53 +69,32 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 		i++
 	}
 
-	for n := 0; n < i; n++ {
-		row := table[n]
-		xaxis = append(xaxis, float64(n)/float64(len(table)))
-		raxis = append(raxis, float64(row[0]))
-		gaxis = append(gaxis, float64(row[1]))
-		baxis = append(baxis, float64(row[2]))
-	}
-
-	fr := piecewiselinear.Function{
-		X: xaxis,
-		Y: raxis,
-	}
-
-	fg := piecewiselinear.Function{
-		X: xaxis,
-		Y: gaxis,
-	}
-
-	fb := piecewiselinear.Function{
-		X: xaxis,
-		Y: baxis,
-	}
-
 	space := &image.NRGBA{}
 	model := space.ColorModel()
-
-	// n := float64(32)
+	N := float64(32) // LUT_3D_SIZE
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			r := float64(float64(c.R) / 255.0)
-			g := float64(float64(c.G) / 255.0)
-			b := float64(float64(c.B) / 255.0)
+			// map to domain
+			r := float64(c.R) / 255.0
+			g := float64(c.G) / 255.0
+			b := float64(c.B) / 255.0
 
-			estr := fr.At(r)
-			estg := fg.At(g)
-			estb := fb.At(b)
+			i := r + N*g + N*N*b
+
+			lookup := table[int(i)]
 
 			o := color.NRGBA{
-				R: uint8(estr * 255),
-				G: uint8(estg * 255),
-				B: uint8(estb * 255),
+				R: uint8(lookup[0] * 255),
+				G: uint8(lookup[1] * 255),
+				B: uint8(lookup[2] * 255),
 				A: 255,
 			}
+
+			// fmt.Println(c, o)
 
 			out.Set(x, y, o)
 		}
