@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"io/ioutil"
+	"math"
 	"strconv"
 	"strings"
 
@@ -77,23 +78,20 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			// map to domain
-			r := float64(c.R) / 255.0
-			g := float64(c.G) / 255.0
-			b := float64(c.B) / 255.0
+			r := math.Floor((float64(c.R) / 255.0) * (N - 1))
+			g := math.Floor((float64(c.G) / 255.0) * (N - 1))
+			b := math.Floor((float64(c.B) / 255.0) * (N - 1))
 
 			i := r + N*g + N*N*b
 
-			lookup := table[int(i)]
+			l := table[int(i)]
 
 			o := color.NRGBA{
-				R: uint8(lookup.R * 255),
-				G: uint8(lookup.G * 255),
-				B: uint8(lookup.B * 255),
+				R: uint8(l.R * 255),
+				G: uint8(l.G * 255),
+				B: uint8(l.B * 255),
 				A: 255,
 			}
-
-			// fmt.Println(c, o)
 
 			out.Set(x, y, o)
 		}
