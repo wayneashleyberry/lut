@@ -1,12 +1,10 @@
 package cube
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"io/ioutil"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 
@@ -79,22 +77,22 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 	space := &image.NRGBA{}
 	model := space.ColorModel()
 
+	n := float32(32)
+
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			r := float32(float32(c.R) / 255.0)
-			g := float32(float32(c.G) / 255.0)
-			b := float32(float32(c.B) / 255.0)
+			r := float32(float32(c.R)/255.0) * (n - 1)
+			g := float32(float32(c.G)/255.0) * (n - 1)
+			b := float32(float32(c.B)/255.0) * (n - 1)
 
-			ri := int(math.Floor(float64(r) * float64(len(table)-1)))
-			gi := int(math.Floor(float64(g) * float64(len(table)-1)))
-			bi := int(math.Floor(float64(b) * float64(len(table)-1)))
+			idx := int(math.Floor(float64(r + n*g + n*n*b)))
 
-			lutr := table[ri][0]
-			lutg := table[gi][1]
-			lutb := table[bi][2]
+			lutr := table[idx][0]
+			lutg := table[idx][1]
+			lutb := table[idx][2]
 
 			o := color.NRGBA{
 				R: uint8(lutr * 255),
@@ -102,10 +100,6 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 				B: uint8(lutb * 255),
 				A: 255,
 			}
-
-			fmt.Println(r, g, b)
-			fmt.Println(lutr, lutg, lutb)
-			os.Exit(1)
 
 			out.Set(x, y, o)
 		}
