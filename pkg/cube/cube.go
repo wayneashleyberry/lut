@@ -4,10 +4,10 @@ import (
 	"image"
 	"image/color"
 	"io/ioutil"
-	"math"
 	"strconv"
 	"strings"
 
+	"github.com/sgreben/piecewiselinear"
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
@@ -34,11 +34,12 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 
 	table := map[int][]float32{}
 
-	// size := float32(32)
-	// dmin := []float32{0, 0, 0}
-	// dmax := []float32{1, 1, 1}
-
 	i := 0
+
+	xaxis := []float64{}
+	raxis := []float64{}
+	gaxis := []float64{}
+	baxis := []float64{}
 
 	for _, line := range strings.Split(file, "\n") {
 		if strings.HasPrefix(line, "#") {
@@ -74,30 +75,51 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 		i++
 	}
 
+	for n := 0; n < i; n++ {
+		row := table[n]
+		xaxis = append(xaxis, float64(n)/float64(len(table)))
+		raxis = append(raxis, float64(row[0]))
+		gaxis = append(gaxis, float64(row[1]))
+		baxis = append(baxis, float64(row[2]))
+	}
+
+	fr := piecewiselinear.Function{
+		X: xaxis,
+		Y: raxis,
+	}
+
+	fg := piecewiselinear.Function{
+		X: xaxis,
+		Y: gaxis,
+	}
+
+	fb := piecewiselinear.Function{
+		X: xaxis,
+		Y: baxis,
+	}
+
 	space := &image.NRGBA{}
 	model := space.ColorModel()
 
-	n := float32(32)
+	// n := float64(32)
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			r := float32(float32(c.R)/255.0) * (n - 1)
-			g := float32(float32(c.G)/255.0) * (n - 1)
-			b := float32(float32(c.B)/255.0) * (n - 1)
+			r := float64(float64(c.R) / 255.0)
+			g := float64(float64(c.G) / 255.0)
+			b := float64(float64(c.B) / 255.0)
 
-			idx := int(math.Floor(float64(r + n*g + n*n*b)))
-
-			lutr := table[idx][0]
-			lutg := table[idx][1]
-			lutb := table[idx][2]
+			estr := fr.At(r)
+			estg := fg.At(g)
+			estb := fb.At(b)
 
 			o := color.NRGBA{
-				R: uint8(lutr * 255),
-				G: uint8(lutg * 255),
-				B: uint8(lutb * 255),
+				R: uint8(estr * 255),
+				G: uint8(estg * 255),
+				B: uint8(estb * 255),
 				A: 255,
 			}
 
