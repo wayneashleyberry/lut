@@ -40,9 +40,21 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 
 	i := 0
 
+	var N float64 // LUT_3D_SIZE
+
 	for _, line := range strings.Split(file, "\n") {
 		if strings.HasPrefix(line, "#") {
 			continue
+		}
+
+		if strings.HasPrefix(line, "LUT_3D_SIZE") {
+			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
+			n, err := strconv.ParseFloat(s, 64)
+			if err != nil {
+				return out, err
+			}
+
+			N = n
 		}
 
 		parts := strings.Split(line, " ")
@@ -71,7 +83,6 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 
 	space := &image.NRGBA{}
 	model := space.ColorModel()
-	N := float64(32) // LUT_3D_SIZE
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
