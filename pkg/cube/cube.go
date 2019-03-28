@@ -10,6 +10,10 @@ import (
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
+type col64 struct {
+	R, G, B float64
+}
+
 // Apply implementation
 func Apply(srcfile, lutfile string) (image.Image, error) {
 	src, err := util.ReadImage(srcfile)
@@ -31,7 +35,7 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 
 	file := string(b)
 
-	table := map[int][]float32{}
+	table := map[int]col64{}
 
 	i := 0
 
@@ -60,12 +64,7 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 			return out, err
 		}
 
-		table[i] = []float32{
-			float32(r),
-			float32(g),
-			float32(b),
-		}
-
+		table[i] = col64{R: r, G: g, B: b}
 		i++
 	}
 
@@ -88,9 +87,9 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 			lookup := table[int(i)]
 
 			o := color.NRGBA{
-				R: uint8(lookup[0] * 255),
-				G: uint8(lookup[1] * 255),
-				B: uint8(lookup[2] * 255),
+				R: uint8(lookup.R * 255),
+				G: uint8(lookup.G * 255),
+				B: uint8(lookup.B * 255),
 				A: 255,
 			}
 
