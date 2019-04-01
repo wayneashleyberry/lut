@@ -13,6 +13,7 @@ import (
 
 // CubeFile implementation
 type CubeFile struct {
+	Title string  // TITLE
 	Size  float64 // LUT_3D_SIZE
 	Table map[int][]float64
 }
@@ -41,6 +42,12 @@ func Parse(r io.Reader) (CubeFile, error) {
 			}
 
 			o.Size = n
+		}
+
+		if strings.HasPrefix(line, "TITLE") {
+			s := strings.ReplaceAll(line, "TITLE", "")
+			s = strings.ReplaceAll(s, `"`, "")
+			o.Title = strings.TrimSpace(s)
 		}
 
 		parts := strings.Split(line, " ")

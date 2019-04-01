@@ -48,6 +48,7 @@ go run main.go
 - Interpolation of any kind
 - Image LUT's of arbitrary sizes
 - 2d `.cube` files
+- 3d `.cube` files are assumed to have a domain between `0.0` and `1.0`
 
 ### Examples
 
