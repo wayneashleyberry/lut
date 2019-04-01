@@ -1,4 +1,4 @@
-package cube
+package cubelut
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package lut
+package imagelut
 
 import (
 	"errors"
@@ -11,6 +11,16 @@ import (
 func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")
+	}
+
+	efbounds := effect.Bounds()
+
+	if efbounds.Max.X != 512 {
+		return src, errors.New("only 512x512 image LUT's are currently supported")
+	}
+
+	if efbounds.Max.Y != 512 {
+		return src, errors.New("only 512x512 image LUT's are currently supported")
 	}
 
 	bounds := src.Bounds()

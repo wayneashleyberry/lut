@@ -7,8 +7,6 @@
 
 I wrote this command-line tool and package to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
 
-Currently only 512px by 512px LUT's are supported — future work might be done to support other dimenions.
-
 ### Example
 
 ```sh
@@ -52,5 +50,5 @@ go run main.go
 
 - Images stored in `.jpeg` or `.png` files
 - LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
-- LUT's stored in 256x256 `jpeg` or `png` images
+- LUT's stored in 512x512 `jpeg` or `png` images
 - Filter intensity

@@ -7,8 +7,8 @@ import (
 	"path"
 
 	"github.com/spf13/cobra"
-	"github.com/wayneashleyberry/lut/pkg/cube"
-	"github.com/wayneashleyberry/lut/pkg/lut"
+	"github.com/wayneashleyberry/lut/pkg/cubelut"
+	"github.com/wayneashleyberry/lut/pkg/imagelut"
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
@@ -42,7 +42,7 @@ func main() {
 
 			switch path.Ext(lutfile) {
 			case ".cube":
-				img, err := cube.Apply(srcimg, lutfile, intensity)
+				img, err := cubelut.Apply(srcimg, lutfile, intensity)
 				if err != nil {
 					exit(err)
 				}
@@ -55,7 +55,7 @@ func main() {
 					exit(err)
 				}
 
-				img, err := lut.Apply(srcimg, lutimg, intensity)
+				img, err := imagelut.Apply(srcimg, lutimg, intensity)
 				if err != nil {
 					exit(err)
 				}
