@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"os"
+	"path"
 
 	"github.com/spf13/cobra"
+	"github.com/wayneashleyberry/lut/pkg/cube"
 	"github.com/wayneashleyberry/lut/pkg/lut"
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
@@ -35,17 +38,32 @@ func main() {
 				exit(err)
 			}
 
-			lutimg, err := util.ReadImage(lutfile)
-			if err != nil {
-				exit(err)
+			var out image.Image
+
+			switch path.Ext(lutfile) {
+			case ".cube":
+				img, err := cube.Apply(srcimg, lutfile, intensity)
+				if err != nil {
+					exit(err)
+				}
+
+				out = img
+
+			default:
+				lutimg, err := util.ReadImage(lutfile)
+				if err != nil {
+					exit(err)
+				}
+
+				img, err := lut.Apply(srcimg, lutimg, intensity)
+				if err != nil {
+					exit(err)
+				}
+
+				out = img
 			}
 
-			img, err := lut.Apply(srcimg, lutimg, intensity)
-			if err != nil {
-				exit(err)
-			}
-
-			if err := util.WriteImage(outfile, img); err != nil {
+			if err := util.WriteImage(outfile, out); err != nil {
 				exit(err)
 			}
 		},
