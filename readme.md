@@ -47,3 +47,10 @@ git clone git@github.com:wayneashleyberry/lut.git
 cd lut
 go run main.go
 ```
+
+### Supported Features
+
+- Images stored in `.jpeg` or `.png` files
+- LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
+- LUT's stored in 256x256 `jpeg` or `png` images
+- Filter intensity
