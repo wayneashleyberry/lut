@@ -48,6 +48,7 @@ func main() {
 				if err != nil {
 					exit(err)
 				}
+				defer file.Close()
 
 				r := bufio.NewReader(file)
 

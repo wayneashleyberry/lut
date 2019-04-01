@@ -1,7 +1,7 @@
 package cubelut
 
 import (
-	"bytes"
+	"bufio"
 	"errors"
 	"image"
 	"image/color"
@@ -25,15 +25,10 @@ func Parse(r io.Reader) (CubeFile, error) {
 
 	i := 0
 
-	buf := new(bytes.Buffer)
-	_, err := buf.ReadFrom(r)
-	if err != nil {
-		return o, err
-	}
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		line := scanner.Text()
 
-	s := buf.String()
-
-	for _, line := range strings.Split(s, "\n") {
 		if strings.HasPrefix(line, "#") {
 			continue
 		}
@@ -70,6 +65,10 @@ func Parse(r io.Reader) (CubeFile, error) {
 
 		table[i] = []float64{r, g, b}
 		i++
+	}
+
+	if err := scanner.Err(); err != nil {
+		return o, err
 	}
 
 	if o.Size == 0 {
