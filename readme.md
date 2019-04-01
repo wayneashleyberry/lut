@@ -7,16 +7,6 @@
 
 I wrote this command-line tool and package to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
 
-### Example
-
-```sh
-go run main.go apply testdata/sample.jpg --lut testdata/filter.png --out testdata/output.jpg
-```
-
-| Input                                                                                                     | LUT                                                                                                  | Output                                                                                           |
-| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| ![an unfiltered image](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/sample.jpg) | ![a lookup table](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/filter.png) | ![the result](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/output.jpg) |
-
 ### Usage
 
 ```
@@ -52,3 +42,18 @@ go run main.go
 - LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
 - LUT's stored in 512x512 `jpeg` or `png` images
 - Filter intensity
+
+### Not yet supported
+
+- Interpolation of any kind
+- Image LUT's of arbitrary sizes
+
+### Examples
+
+```sh
+go run main.go apply testdata/sample.jpg --lut testdata/filter.png --out testdata/output.jpg
+```
+
+| Input                                                                                                     | LUT                                                                                                  | Output                                                                                           |
+| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| ![an unfiltered image](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/sample.jpg) | ![a lookup table](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/filter.png) | ![the result](https://raw.githubusercontent.com/wayneashleyberry/lut/master/testdata/output.jpg) |
