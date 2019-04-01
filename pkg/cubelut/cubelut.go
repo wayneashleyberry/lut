@@ -26,7 +26,11 @@ func Parse(r io.Reader) (CubeFile, error) {
 	i := 0
 
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(r)
+	_, err := buf.ReadFrom(r)
+	if err != nil {
+		return o, err
+	}
+
 	s := buf.String()
 
 	for _, line := range strings.Split(s, "\n") {
