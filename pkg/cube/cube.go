@@ -1,14 +1,13 @@
 package cube
 
 import (
+	"errors"
 	"image"
 	"image/color"
 	"io/ioutil"
 	"math"
 	"strconv"
 	"strings"
-
-	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
 type col64 struct {
@@ -16,10 +15,9 @@ type col64 struct {
 }
 
 // Apply implementation
-func Apply(srcfile, lutfile string) (image.Image, error) {
-	src, err := util.ReadImage(srcfile)
-	if err != nil {
-		return nil, err
+func Apply(src image.Image, lutfile string, intensity float64) (image.Image, error) {
+	if intensity < 0 || intensity > 1 {
+		return src, errors.New("intensity must be between 0 and 1")
 	}
 
 	bounds := src.Bounds()
@@ -97,12 +95,13 @@ func Apply(srcfile, lutfile string) (image.Image, error) {
 
 			l := table[int(i)]
 
-			o := color.NRGBA{
-				R: uint8(l.R * 255),
-				G: uint8(l.G * 255),
-				B: uint8(l.B * 255),
-				A: 255,
-			}
+			lr, lg, lb := uint8(l.R*255), uint8(l.G*255), uint8(l.B*255)
+
+			o := color.NRGBA{}
+			o.R = uint8(float64(c.R)*(1-intensity) + float64(lr)*intensity)
+			o.G = uint8(float64(c.G)*(1-intensity) + float64(lg)*intensity)
+			o.B = uint8(float64(c.B)*(1-intensity) + float64(lb)*intensity)
+			o.A = c.A
 
 			out.Set(x, y, o)
 		}

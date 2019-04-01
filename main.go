@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"os"
+	"path"
 
 	"github.com/spf13/cobra"
 	"github.com/wayneashleyberry/lut/pkg/cube"
@@ -36,17 +38,32 @@ func main() {
 				exit(err)
 			}
 
-			lutimg, err := util.ReadImage(lutfile)
-			if err != nil {
-				exit(err)
+			var out image.Image
+
+			switch path.Ext(lutfile) {
+			case ".cube":
+				img, err := cube.Apply(srcimg, lutfile, intensity)
+				if err != nil {
+					exit(err)
+				}
+
+				out = img
+
+			default:
+				lutimg, err := util.ReadImage(lutfile)
+				if err != nil {
+					exit(err)
+				}
+
+				img, err := lut.Apply(srcimg, lutimg, intensity)
+				if err != nil {
+					exit(err)
+				}
+
+				out = img
 			}
 
-			img, err := lut.Apply(srcimg, lutimg, intensity)
-			if err != nil {
-				exit(err)
-			}
-
-			if err := util.WriteImage(outfile, img); err != nil {
+			if err := util.WriteImage(outfile, out); err != nil {
 				exit(err)
 			}
 		},
@@ -60,21 +77,6 @@ func main() {
 	_ = apply.MarkFlagRequired("out")
 
 	cmd.AddCommand(apply)
-
-	cmd.AddCommand(&cobra.Command{
-		Use:  "cube [source.png] [effect.cube] [out.png]",
-		Args: cobra.ExactArgs(3),
-		Run: func(cmd *cobra.Command, args []string) {
-			img, err := cube.Apply(args[0], args[1])
-			if err != nil {
-				exit(err)
-			}
-
-			if err := util.WriteImage(args[2], img); err != nil {
-				exit(err)
-			}
-		},
-	})
 
 	if err := cmd.Execute(); err != nil {
 		fmt.Println(err)
