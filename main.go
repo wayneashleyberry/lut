@@ -5,6 +5,7 @@ import (
 	"image"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/wayneashleyberry/lut/pkg/cubelut"
@@ -40,7 +41,7 @@ func main() {
 
 			var out image.Image
 
-			switch path.Ext(lutfile) {
+			switch strings.ToLower(path.Ext(lutfile)) {
 			case ".cube":
 				img, err := cubelut.Apply(srcimg, lutfile, intensity)
 				if err != nil {
