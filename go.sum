@@ -1,9 +1,5 @@
-github.com/DzananGanic/numericalgo v0.0.0-20170804125527-2b389385baf0 h1:r6uFFLCEAjchb/oIwOojAsW4jchQxVBgQ33iOcMwwo8=
-github.com/DzananGanic/numericalgo v0.0.0-20170804125527-2b389385baf0/go.mod h1:uIo7VpFvBkDQoCyKqUL/mTNjpOlv1KdWaJyCsBSpCe4=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
-github.com/sgreben/piecewiselinear v0.0.0-20181114033753-afc114d351d9 h1:bsdhOW2fqMbzoyGt5bXe214SQdp42i/tlPfkNOmcF2w=
-github.com/sgreben/piecewiselinear v0.0.0-20181114033753-afc114d351d9/go.mod h1:7D0uT3k3SE4rEiE6wuDwVfgd7U31LXMSz4G6kM/bpTM=
 github.com/spf13/cobra v0.0.3 h1:ZlrZ4XsMRm04Fr5pSFxBgfND2EBVa1nLpiy1stUsX/8=
 github.com/spf13/cobra v0.0.3/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=
 github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
