@@ -38,7 +38,7 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 
 	i := 0
 
-	var N float64 // LUT_3D_SIZE
+	var n float64 // LUT_3D_SIZE
 
 	for _, line := range strings.Split(file, "\n") {
 		if strings.HasPrefix(line, "#") {
@@ -47,12 +47,12 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 
 		if strings.HasPrefix(line, "LUT_3D_SIZE") {
 			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
-			n, err := strconv.ParseFloat(s, 64)
+			f, err := strconv.ParseFloat(s, 64)
 			if err != nil {
 				return out, err
 			}
 
-			N = n
+			n = f
 		}
 
 		parts := strings.Split(line, " ")
@@ -79,7 +79,7 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 		i++
 	}
 
-	if N == 0 {
+	if n == 0 {
 		return src, errors.New("invalid lut size")
 	}
 
@@ -91,11 +91,11 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			r := math.Floor((float64(c.R) / 255.0) * (N - 1))
-			g := math.Floor((float64(c.G) / 255.0) * (N - 1))
-			b := math.Floor((float64(c.B) / 255.0) * (N - 1))
+			r := math.Floor((float64(c.R) / 255.0) * (n - 1))
+			g := math.Floor((float64(c.G) / 255.0) * (n - 1))
+			b := math.Floor((float64(c.B) / 255.0) * (n - 1))
 
-			i := r + N*g + N*N*b
+			i := r + n*g + n*n*b
 
 			l := table[int(i)]
 
