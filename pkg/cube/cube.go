@@ -79,6 +79,10 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 		i++
 	}
 
+	if N == 0 {
+		return src, errors.New("invalid lut size")
+	}
+
 	space := &image.NRGBA{}
 	model := space.ColorModel()
 
