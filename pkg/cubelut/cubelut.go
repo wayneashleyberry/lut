@@ -1,21 +1,84 @@
 package cubelut
 
 import (
+	"bytes"
 	"errors"
 	"image"
 	"image/color"
-	"io/ioutil"
+	"io"
 	"math"
 	"strconv"
 	"strings"
 )
 
-type col64 struct {
-	R, G, B float64
+// CubeFile implementation
+type CubeFile struct {
+	Size  float64 // LUT_3D_SIZE
+	Table map[int][]float64
+}
+
+// Parse will parse an io.Reader and return a CubeFile
+func Parse(r io.Reader) (CubeFile, error) {
+	o := CubeFile{}
+
+	table := map[int][]float64{}
+
+	i := 0
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(r)
+	s := buf.String()
+
+	for _, line := range strings.Split(s, "\n") {
+		if strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		if strings.HasPrefix(line, "LUT_3D_SIZE") {
+			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
+			n, err := strconv.ParseFloat(s, 64)
+			if err != nil {
+				return o, err
+			}
+
+			o.Size = n
+		}
+
+		parts := strings.Split(line, " ")
+		if len(parts) != 3 {
+			continue
+		}
+
+		r, err := strconv.ParseFloat(parts[0], 32)
+		if err != nil {
+			return o, err
+		}
+
+		g, err := strconv.ParseFloat(parts[1], 32)
+		if err != nil {
+			return o, err
+		}
+
+		b, err := strconv.ParseFloat(parts[2], 32)
+		if err != nil {
+			return o, err
+		}
+
+		table[i] = []float64{r, g, b}
+		i++
+	}
+
+	if o.Size == 0 {
+		return o, errors.New("invalid lut size")
+	}
+
+	o.Table = table
+
+	return o, nil
 }
 
 // Apply implementation
-func Apply(src image.Image, lutfile string, intensity float64) (image.Image, error) {
+func Apply(src image.Image, cube CubeFile, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")
 	}
@@ -27,62 +90,6 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 		image.Point{bounds.Max.X, bounds.Max.Y},
 	})
 
-	b, err := ioutil.ReadFile(lutfile)
-	if err != nil {
-		return out, err
-	}
-
-	file := string(b)
-
-	table := map[int]col64{}
-
-	i := 0
-
-	var n float64 // LUT_3D_SIZE
-
-	for _, line := range strings.Split(file, "\n") {
-		if strings.HasPrefix(line, "#") {
-			continue
-		}
-
-		if strings.HasPrefix(line, "LUT_3D_SIZE") {
-			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
-			f, err := strconv.ParseFloat(s, 64)
-			if err != nil {
-				return out, err
-			}
-
-			n = f
-		}
-
-		parts := strings.Split(line, " ")
-		if len(parts) != 3 {
-			continue
-		}
-
-		r, err := strconv.ParseFloat(parts[0], 32)
-		if err != nil {
-			return out, err
-		}
-
-		g, err := strconv.ParseFloat(parts[1], 32)
-		if err != nil {
-			return out, err
-		}
-
-		b, err := strconv.ParseFloat(parts[2], 32)
-		if err != nil {
-			return out, err
-		}
-
-		table[i] = col64{R: r, G: g, B: b}
-		i++
-	}
-
-	if n == 0 {
-		return src, errors.New("invalid lut size")
-	}
-
 	space := &image.NRGBA{}
 	model := space.ColorModel()
 
@@ -91,15 +98,15 @@ func Apply(src image.Image, lutfile string, intensity float64) (image.Image, err
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			r := math.Floor((float64(c.R) / 255.0) * (n - 1))
-			g := math.Floor((float64(c.G) / 255.0) * (n - 1))
-			b := math.Floor((float64(c.B) / 255.0) * (n - 1))
+			r := math.Floor((float64(c.R) / 255.0) * (cube.Size - 1))
+			g := math.Floor((float64(c.G) / 255.0) * (cube.Size - 1))
+			b := math.Floor((float64(c.B) / 255.0) * (cube.Size - 1))
 
-			i := r + n*g + n*n*b
+			i := r + cube.Size*g + cube.Size*cube.Size*b
 
-			l := table[int(i)]
+			row := cube.Table[int(i)]
 
-			lr, lg, lb := uint8(l.R*255), uint8(l.G*255), uint8(l.B*255)
+			lr, lg, lb := uint8(row[0]*255), uint8(row[1]*255), uint8(row[2]*255)
 
 			o := color.NRGBA{}
 			o.R = uint8(float64(c.R)*(1-intensity) + float64(lr)*intensity)

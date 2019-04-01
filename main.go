@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"image"
 	"os"
@@ -43,7 +44,19 @@ func main() {
 
 			switch strings.ToLower(path.Ext(lutfile)) {
 			case ".cube":
-				img, err := cubelut.Apply(srcimg, lutfile, intensity)
+				file, err := os.Open(lutfile)
+				if err != nil {
+					exit(err)
+				}
+
+				r := bufio.NewReader(file)
+
+				cube, err := cubelut.Parse(r)
+				if err != nil {
+					exit(err)
+				}
+
+				img, err := cubelut.Apply(srcimg, cube, intensity)
 				if err != nil {
 					exit(err)
 				}

@@ -39,7 +39,7 @@ go run main.go
 ### Supported Features
 
 - Images stored in `.jpeg` or `.png` files
-- LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
+- 3D LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
 - LUT's stored in 512x512 `jpeg` or `png` images
 - Filter intensity
 
@@ -47,6 +47,7 @@ go run main.go
 
 - Interpolation of any kind
 - Image LUT's of arbitrary sizes
+- 2d `.cube` files
 
 ### Examples
 
