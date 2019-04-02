@@ -108,15 +108,15 @@ func Apply(src image.Image, cube CubeFile, intensity float64) (image.Image, erro
 			px := src.At(x, y)
 			c := model.Convert(px).(color.NRGBA)
 
-			r := math.Floor((float64(c.R) / 255.0) * (cube.Size - 1))
-			g := math.Floor((float64(c.G) / 255.0) * (cube.Size - 1))
-			b := math.Floor((float64(c.B) / 255.0) * (cube.Size - 1))
+			r := math.Floor((float64(c.R) / 0xff) * (cube.Size - 1))
+			g := math.Floor((float64(c.G) / 0xff) * (cube.Size - 1))
+			b := math.Floor((float64(c.B) / 0xff) * (cube.Size - 1))
 
 			i := r + cube.Size*g + cube.Size*cube.Size*b
 
 			row := cube.Table[int(i)]
 
-			lr, lg, lb := uint8(row[0]*255), uint8(row[1]*255), uint8(row[2]*255)
+			lr, lg, lb := uint8(row[0]*0xff), uint8(row[1]*0xff), uint8(row[2]*0xff)
 
 			o := color.NRGBA{}
 			o.R = uint8(float64(c.R)*(1-intensity) + float64(lr)*intensity)
