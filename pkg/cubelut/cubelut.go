@@ -116,12 +116,12 @@ func Apply(src image.Image, cube CubeFile, intensity float64) (image.Image, erro
 
 			row := cube.Table[int(i)]
 
-			lr, lg, lb := uint8(row[0]*0xff), uint8(row[1]*0xff), uint8(row[2]*0xff)
+			lr, lg, lb := row[0]*0xff, row[1]*0xff, row[2]*0xff
 
 			o := color.NRGBA{}
-			o.R = uint8(float64(c.R)*(1-intensity) + float64(lr)*intensity)
-			o.G = uint8(float64(c.G)*(1-intensity) + float64(lg)*intensity)
-			o.B = uint8(float64(c.B)*(1-intensity) + float64(lb)*intensity)
+			o.R = uint8(float64(c.R)*(1-intensity) + lr*intensity)
+			o.G = uint8(float64(c.G)*(1-intensity) + lg*intensity)
+			o.B = uint8(float64(c.B)*(1-intensity) + lb*intensity)
 			o.A = c.A
 
 			out.Set(x, y, o)
