@@ -55,17 +55,17 @@ func Parse(r io.Reader) (CubeFile, error) {
 			continue
 		}
 
-		r, err := strconv.ParseFloat(parts[0], 32)
+		r, err := strconv.ParseFloat(parts[0], 16)
 		if err != nil {
 			return o, err
 		}
 
-		g, err := strconv.ParseFloat(parts[1], 32)
+		g, err := strconv.ParseFloat(parts[1], 16)
 		if err != nil {
 			return o, err
 		}
 
-		b, err := strconv.ParseFloat(parts[2], 32)
+		b, err := strconv.ParseFloat(parts[2], 16)
 		if err != nil {
 			return o, err
 		}
