@@ -7,6 +7,8 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
 // CubeFile implementation
@@ -21,6 +23,10 @@ type CubeFile struct {
 // Parse will parse an io.Reader and return a CubeFile
 func Parse(r io.Reader) (CubeFile, error) {
 	o := CubeFile{}
+
+	// Defaults
+	o.DomainMin = []float64{0, 0, 0}
+	o.DomainMax = []float64{1, 1, 1}
 
 	table := map[int][]float64{}
 
@@ -50,27 +56,35 @@ func Parse(r io.Reader) (CubeFile, error) {
 			o.Title = strings.TrimSpace(s)
 		}
 
+		if strings.HasPrefix(line, "DOMAIN_MIN") {
+			s := strings.ReplaceAll(line, "DOMAIN_MIN", "")
+			min := util.ParseFloats(s, 8)
+			if len(min) != 3 {
+				return o, errors.New("invalid domain min values")
+			}
+			o.DomainMin = min
+		}
+
+		if strings.HasPrefix(line, "DOMAIN_MAX") {
+			s := strings.ReplaceAll(line, "DOMAIN_MAX", "")
+			max := util.ParseFloats(s, 8)
+			if len(max) != 3 {
+				return o, errors.New("invalid domain max values")
+			}
+			o.DomainMax = max
+		}
+
 		parts := strings.Split(line, " ")
 		if len(parts) != 3 {
 			continue
 		}
 
-		r, err := strconv.ParseFloat(parts[0], 16)
-		if err != nil {
-			return o, err
+		rgb := util.ParseFloats(line, 16)
+		if len(rgb) != 3 {
+			continue
 		}
 
-		g, err := strconv.ParseFloat(parts[1], 16)
-		if err != nil {
-			return o, err
-		}
-
-		b, err := strconv.ParseFloat(parts[2], 16)
-		if err != nil {
-			return o, err
-		}
-
-		table[i] = []float64{r, g, b}
+		table[i] = rgb
 		i++
 	}
 
@@ -84,10 +98,6 @@ func Parse(r io.Reader) (CubeFile, error) {
 
 	o.Table = table
 
-	// TODO
-	o.DomainMin = []float64{0, 0, 0}
-	o.DomainMax = []float64{1, 1, 1}
-
 	return o, nil
 }
 
@@ -97,12 +107,12 @@ func Apply(src image.Image, cube CubeFile, intensity float64) (image.Image, erro
 		return src, errors.New("intensity must be between 0 and 1")
 	}
 
-	// bounds := src.Bounds()
+	bounds := src.Bounds()
 
-	// out := image.NewNRGBA(image.Rectangle{
-	// 	image.Point{0, 0},
-	// 	image.Point{bounds.Max.X, bounds.Max.Y},
-	// })
+	out := image.NewNRGBA(image.Rectangle{
+		image.Point{0, 0},
+		image.Point{bounds.Max.X, bounds.Max.Y},
+	})
 
 	// space := &image.NRGBA{}
 	// model := space.ColorModel()
