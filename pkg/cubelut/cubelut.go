@@ -3,6 +3,7 @@ package cubelut
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"image"
 	"io"
 	"strconv"
@@ -13,10 +14,10 @@ import (
 
 // CubeFile implementation
 type CubeFile struct {
-	Dimensions int64
+	Dimensions int
 	DomainMax  []float64 // DOMAIN_MAX
 	DomainMin  []float64 // DOMAIN_MIN
-	Size       int64     // LUT_3D_SIZE
+	Size       int       // LUT_3D_SIZE
 	Title      string    // TITLE
 	R          []float64
 	G          []float64
@@ -82,7 +83,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 				return o, err
 			}
 
-			o.Size = n
+			o.Size = int(n)
 			o.Dimensions = 3
 			o.R = make([]float64, n*n*n)
 			o.G = make([]float64, n*n*n)
@@ -112,7 +113,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 }
 
 // Apply implementation
-func Apply(src image.Image, cube CubeFile, intensity float64) (image.Image, error) {
+func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")
 	}
@@ -124,7 +125,21 @@ func Apply(src image.Image, cube CubeFile, intensity float64) (image.Image, erro
 		image.Point{bounds.Max.X, bounds.Max.Y},
 	})
 
-	// TODO
+	// Build a color cube
+
+	var cube = [32][32][32][]float64{}
+
+	// x, y, z := 0, 0, 0
+	for i := 0; i < lut.Size*lut.Size*lut.Size; i++ {
+		x := i % lut.Size
+		y := i / lut.Size % lut.Size
+		z := i / lut.Size / lut.Size
+
+		cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
+	}
+
+	fmt.Println(cube[0][0][0])
+	fmt.Println(cube[31][31][31])
 
 	return out, nil
 }
