@@ -134,10 +134,13 @@ func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error
 		y := i / lut.Size % lut.Size
 		z := i / lut.Size / lut.Size
 		cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
+		// fmt.Println(i, x, y, z, lut.R[i], lut.G[i], lut.B[i])
 	}
 
 	fmt.Println(cube[0][0][0])
-	fmt.Println(cube[31][31][31])
+	fmt.Println(cube[31][0][0])
+	fmt.Println(cube[0][31][0])
+	fmt.Println(cube[0][0][31])
 
 	return out, nil
 }
