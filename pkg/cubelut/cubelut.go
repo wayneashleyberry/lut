@@ -129,12 +129,10 @@ func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error
 
 	var cube = [32][32][32][]float64{}
 
-	// x, y, z := 0, 0, 0
 	for i := 0; i < lut.Size*lut.Size*lut.Size; i++ {
 		x := i % lut.Size
 		y := i / lut.Size % lut.Size
 		z := i / lut.Size / lut.Size
-
 		cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
 	}
 
