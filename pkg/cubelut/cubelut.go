@@ -270,17 +270,20 @@ func getFromRGBTrilinear(r, g, b, size int, k float64, table3D Table3D) []float6
 
 	rx := trilerp(
 		iR, iG, iB, c000[0], c001[0], c010[0], c011[0],
-		c100[0], c101[0], c110[0], c111[0], float64(fR0), float64(fR1), float64(fG0), float64(fG1), float64(fB0), float64(fB1),
+		c100[0], c101[0], c110[0], c111[0],
+		float64(fR0), float64(fR1), float64(fG0), float64(fG1), float64(fB0), float64(fB1),
 	)
 
 	gx := trilerp(
 		iR, iG, iB, c000[1], c001[1], c010[1], c011[1],
-		c100[1], c101[1], c110[1], c111[1], float64(fR0), float64(fR1), float64(fG0), float64(fG1), float64(fB0), float64(fB1),
+		c100[1], c101[1], c110[1], c111[1],
+		float64(fR0), float64(fR1), float64(fG0), float64(fG1), float64(fB0), float64(fB1),
 	)
 
 	bx := trilerp(
 		iR, iG, iB, c000[1], c001[1], c010[1], c011[1],
-		c100[1], c101[1], c110[1], c111[1], float64(fR0), float64(fR1), float64(fG0), float64(fG1), float64(fB0), float64(fB1),
+		c100[1], c101[1], c110[1], c111[1],
+		float64(fR0), float64(fR1), float64(fG0), float64(fG1), float64(fB0), float64(fB1),
 	)
 
 	return []float64{rx, gx, bx}
