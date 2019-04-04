@@ -139,11 +139,6 @@ func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error
 		cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
 	}
 
-	// fmt.Println(cube[0][0][0])
-	// fmt.Println(cube[31][0][0])
-	// fmt.Println(cube[0][31][0])
-	// fmt.Println(cube[0][0][31])
-
 	k := (float64(lut.Size) - 1) / bpc
 
 	space := &image.NRGBA{}
@@ -173,19 +168,12 @@ func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error
 			o.B = uint8(toIntCh(rgb[2] * dKB))
 			o.A = c.A
 
-			// fmt.Println(c, o)
-
 			out.Set(x, y, o)
 		}
 	}
 
 	return out, nil
 }
-
-// int _toIntCh(double x) => _clampToChannelSize((x * bpc).floor());
-// func toIntCh(x float64) int {
-// return clampToChannelSize(int(math.Floor((x * float64(bpc)))))
-// }
 
 // Table3D Implementation
 type Table3D [32][32][32][]float64
@@ -270,8 +258,6 @@ func getFromRGBTrilinear(r, g, b, size int, k float64, table3D Table3D) []float6
 	} else {
 		fB0 = clampToChannelSize(int(math.Floor(iB - 1)))
 	}
-
-	// fmt.Println(fR0, fR1, fG0, fG1, fB0, fB1)
 
 	c000 := table3D[fR0][fG0][fB0]
 	c010 := table3D[fR0][fG1][fB0]
