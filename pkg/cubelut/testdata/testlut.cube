@@ -1,7 +1,7 @@
 TITLE "Hello, World!"
 
 # size
-LUT_3D_SIZE 32
+LUT_3D_SIZE 2
 
 # data domain
 DOMAIN_MIN 0.0 0.0 0.0
@@ -9,5 +9,10 @@ DOMAIN_MAX 2.0 2.0 2.0
 
 # data points
 0.1 0.1 0.1
+0.2 0.2 0.2
+0.3 0.3 0.3
+0.4 0.4 0.4
 0.5 0.5 0.5
-1 1 1
+0.6 0.6 0.6
+0.7 0.7 0.7
+0.8 0.8 0.8

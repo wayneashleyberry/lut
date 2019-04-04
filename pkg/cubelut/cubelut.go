@@ -13,12 +13,14 @@ import (
 
 // CubeFile implementation
 type CubeFile struct {
-	Dimensions int
+	Dimensions int64
 	DomainMax  []float64 // DOMAIN_MAX
 	DomainMin  []float64 // DOMAIN_MIN
-	Size       float64   // LUT_3D_SIZE
-	Table      map[int][]float64
-	Title      string // TITLE
+	Size       int64     // LUT_3D_SIZE
+	Title      string    // TITLE
+	R          []float64
+	G          []float64
+	B          []float64
 }
 
 // Parse will parse an io.Reader and return a CubeFile
@@ -30,13 +32,16 @@ func Parse(r io.Reader) (CubeFile, error) {
 	o.DomainMin = []float64{0, 0, 0}
 	o.DomainMax = []float64{1, 1, 1}
 
-	table := map[int][]float64{}
-
 	i := 0
 
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		// Skip empty lines
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
 
 		// Skip comments
 		if strings.HasPrefix(line, "#") {
@@ -72,19 +77,24 @@ func Parse(r io.Reader) (CubeFile, error) {
 
 		if strings.HasPrefix(line, "LUT_3D_SIZE") {
 			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
-			n, err := strconv.ParseFloat(s, 64)
+			n, err := strconv.ParseInt(s, 0, 64)
 			if err != nil {
 				return o, err
 			}
 
 			o.Size = n
 			o.Dimensions = 3
+			o.R = make([]float64, n*n*n)
+			o.G = make([]float64, n*n*n)
+			o.B = make([]float64, n*n*n)
 			continue
 		}
 
 		rgb := util.ParseFloats(line, 16)
 		if len(rgb) == 3 {
-			table[i] = rgb
+			o.R[i] = rgb[0]
+			o.G[i] = rgb[1]
+			o.B[i] = rgb[2]
 			i++
 			continue
 		}
@@ -97,8 +107,6 @@ func Parse(r io.Reader) (CubeFile, error) {
 	if o.Size == 0 {
 		return o, errors.New("invalid lut size")
 	}
-
-	o.Table = table
 
 	return o, nil
 }
