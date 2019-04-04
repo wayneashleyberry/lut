@@ -13,11 +13,12 @@ import (
 
 // CubeFile implementation
 type CubeFile struct {
-	DomainMax []float64 // DOMAIN_MAX
-	DomainMin []float64 // DOMAIN_MIN
-	Size      float64   // LUT_3D_SIZE
-	Table     map[int][]float64
-	Title     string // TITLE
+	Dimensions int
+	DomainMax  []float64 // DOMAIN_MAX
+	DomainMin  []float64 // DOMAIN_MIN
+	Size       float64   // LUT_3D_SIZE
+	Table      map[int][]float64
+	Title      string // TITLE
 }
 
 // Parse will parse an io.Reader and return a CubeFile
@@ -25,6 +26,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 	o := CubeFile{}
 
 	// Defaults
+	o.Dimensions = 1
 	o.DomainMin = []float64{0, 0, 0}
 	o.DomainMax = []float64{1, 1, 1}
 
@@ -36,7 +38,35 @@ func Parse(r io.Reader) (CubeFile, error) {
 	for scanner.Scan() {
 		line := scanner.Text()
 
+		// Skip comments
 		if strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		if strings.HasPrefix(line, "TITLE") {
+			s := strings.ReplaceAll(line, "TITLE", "")
+			s = strings.ReplaceAll(s, `"`, "")
+			o.Title = strings.TrimSpace(s)
+			continue
+		}
+
+		if strings.HasPrefix(line, "DOMAIN_MIN") {
+			s := strings.ReplaceAll(line, "DOMAIN_MIN", "")
+			min := util.ParseFloats(s, 8)
+			if len(min) != 3 {
+				return o, errors.New("invalid domain min values")
+			}
+			o.DomainMin = min
+			continue
+		}
+
+		if strings.HasPrefix(line, "DOMAIN_MAX") {
+			s := strings.ReplaceAll(line, "DOMAIN_MAX", "")
+			max := util.ParseFloats(s, 8)
+			if len(max) != 3 {
+				return o, errors.New("invalid domain max values")
+			}
+			o.DomainMax = max
 			continue
 		}
 
@@ -48,44 +78,16 @@ func Parse(r io.Reader) (CubeFile, error) {
 			}
 
 			o.Size = n
-		}
-
-		if strings.HasPrefix(line, "TITLE") {
-			s := strings.ReplaceAll(line, "TITLE", "")
-			s = strings.ReplaceAll(s, `"`, "")
-			o.Title = strings.TrimSpace(s)
-		}
-
-		if strings.HasPrefix(line, "DOMAIN_MIN") {
-			s := strings.ReplaceAll(line, "DOMAIN_MIN", "")
-			min := util.ParseFloats(s, 8)
-			if len(min) != 3 {
-				return o, errors.New("invalid domain min values")
-			}
-			o.DomainMin = min
-		}
-
-		if strings.HasPrefix(line, "DOMAIN_MAX") {
-			s := strings.ReplaceAll(line, "DOMAIN_MAX", "")
-			max := util.ParseFloats(s, 8)
-			if len(max) != 3 {
-				return o, errors.New("invalid domain max values")
-			}
-			o.DomainMax = max
-		}
-
-		parts := strings.Split(line, " ")
-		if len(parts) != 3 {
+			o.Dimensions = 3
 			continue
 		}
 
 		rgb := util.ParseFloats(line, 16)
-		if len(rgb) != 3 {
+		if len(rgb) == 3 {
+			table[i] = rgb
+			i++
 			continue
 		}
-
-		table[i] = rgb
-		i++
 	}
 
 	if err := scanner.Err(); err != nil {

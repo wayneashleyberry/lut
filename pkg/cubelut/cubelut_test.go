@@ -28,15 +28,16 @@ func TestParse(t *testing.T) {
 			},
 			wantErr: false,
 			want: CubeFile{
-				Title:     "Hello, World!",
-				Size:      32,
-				DomainMin: []float64{0.0, 0.0, 0.0},
-				DomainMax: []float64{2.0, 2.0, 2.0},
+				Dimensions: 3,
+				DomainMax:  []float64{2.0, 2.0, 2.0},
+				DomainMin:  []float64{0.0, 0.0, 0.0},
+				Size:       32,
 				Table: map[int][]float64{
 					0: []float64{0.1, 0.1, 0.1},
 					1: []float64{0.5, 0.5, 0.5},
 					2: []float64{1, 1, 1},
 				},
+				Title: "Hello, World!",
 			},
 		},
 	}
