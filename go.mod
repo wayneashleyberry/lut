@@ -1,4 +1,4 @@
-module github.com/wayneashleyberry/lut
+module github.com/overhq/lut
 
 go 1.12
 
