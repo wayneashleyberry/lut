@@ -11,9 +11,6 @@ import (
 	"github.com/overhq/lut/pkg/util"
 )
 
-// bits per channel (we're assuming 8-bits)
-const bpc = 0xff
-
 // CubeFile implementation
 type CubeFile struct {
 	Dimensions int
