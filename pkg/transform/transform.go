@@ -49,9 +49,9 @@ func Image(src image.Image, cube colorcube.Cube, intensity float64) (image.Image
 			)
 
 			o := color.NRGBA{}
-			o.R = uint8(toIntCh(rgb[0] * dKR))
-			o.G = uint8(toIntCh(rgb[1] * dKG))
-			o.B = uint8(toIntCh(rgb[2] * dKB))
+			o.R = uint8(float64(c.R)*(1-intensity) + float64(toIntCh(rgb[0]*dKR))*intensity)
+			o.G = uint8(float64(c.G)*(1-intensity) + float64(toIntCh(rgb[1]*dKG))*intensity)
+			o.B = uint8(float64(c.B)*(1-intensity) + float64(toIntCh(rgb[2]*dKB))*intensity)
 			o.A = c.A
 
 			out.Set(x, y, o)

@@ -53,12 +53,10 @@ func main() {
 
 				r := bufio.NewReader(file)
 
-				lut, err := cubelut.Parse(r)
+				cube, err := cubelut.Parse(r)
 				if err != nil {
 					exit(err)
 				}
-
-				cube := lut.ColorCube()
 
 				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
@@ -66,14 +64,18 @@ func main() {
 				}
 
 				out = img
-
 			default:
 				lutimg, err := util.ReadImage(lutfile)
 				if err != nil {
 					exit(err)
 				}
 
-				img, err := imagelut.Apply(srcimg, lutimg, intensity)
+				cube, err := imagelut.Parse(lutimg)
+				if err != nil {
+					exit(err)
+				}
+
+				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
 					exit(err)
 				}
