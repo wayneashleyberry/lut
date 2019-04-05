@@ -1,8 +1,10 @@
 > LUT contains command-line tools and Go packages for applying colour adjustments to images using lookup tables.
 
+[![wercker status](https://app.wercker.com/status/d6c0d4f2a9fbe670e8a1b11ad161a053/s/master "wercker status")](https://app.wercker.com/project/byKey/d6c0d4f2a9fbe670e8a1b11ad161a053)
+
 ### Motivation and caveats
 
-I wrote this command-line tool and package to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
+This command-line tool and packages were written to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
 
 ### Usage
 
