@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/overhq/lut/pkg/colorcube"
 	"github.com/overhq/lut/pkg/util"
 )
 
@@ -130,13 +131,14 @@ func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error
 
 	// Build a color cube
 
-	var cube Table3D
+	cube := colorcube.New(lut.Size)
 
 	for i := 0; i < lut.Size*lut.Size*lut.Size; i++ {
 		x := i % lut.Size
 		y := i / lut.Size % lut.Size
 		z := i / lut.Size / lut.Size
-		cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
+		// cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
+		cube.Set(x, y, z, []float64{lut.R[i], lut.G[i], lut.B[i]})
 	}
 
 	k := (float64(lut.Size) - 1) / bpc
@@ -210,7 +212,7 @@ func toIntCh(x float64) int {
 	return clampToChannelSize(int(math.Floor(x * float64(bpc))))
 }
 
-func getFromRGBTrilinear(r, g, b, size int, k float64, table3D Table3D) []float64 {
+func getFromRGBTrilinear(r, g, b, size int, k float64, cube colorcube.Cube) []float64 {
 	iR := float64(r) * k
 
 	var fR1 int
@@ -259,14 +261,14 @@ func getFromRGBTrilinear(r, g, b, size int, k float64, table3D Table3D) []float6
 		fB0 = clampToChannelSize(int(math.Floor(iB - 1)))
 	}
 
-	c000 := table3D[fR0][fG0][fB0]
-	c010 := table3D[fR0][fG1][fB0]
-	c001 := table3D[fR0][fG0][fB1]
-	c011 := table3D[fR0][fG1][fB1]
-	c101 := table3D[fR1][fG0][fB1]
-	c100 := table3D[fR1][fG0][fB0]
-	c110 := table3D[fR1][fG1][fB0]
-	c111 := table3D[fR1][fG1][fB1]
+	c000 := cube.Get(fR0, fG0, fB0)
+	c010 := cube.Get(fR0, fG1, fB0)
+	c001 := cube.Get(fR0, fG0, fB1)
+	c011 := cube.Get(fR0, fG1, fB1)
+	c101 := cube.Get(fR1, fG0, fB1)
+	c100 := cube.Get(fR1, fG0, fB0)
+	c110 := cube.Get(fR1, fG1, fB0)
+	c111 := cube.Get(fR1, fG1, fB1)
 
 	rx := trilerp(
 		iR, iG, iB, c000[0], c001[0], c010[0], c011[0],

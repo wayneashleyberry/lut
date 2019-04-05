@@ -4,24 +4,20 @@
 // to be initialised to a specific size to keep things efficient.
 package colorcube
 
-import (
-	"image/color"
-)
-
 // Cube implementation
 type Cube struct {
 	Size int
-	Data map[int]map[int]map[int]color.Color
+	Data map[int]map[int]map[int][]float64
 }
 
 // New will create a new Cube struct with the given size
 func New(size int) Cube {
-	d := make(map[int]map[int]map[int]color.Color, size)
+	d := make(map[int]map[int]map[int][]float64, size)
 
 	for x := 0; x < size; x++ {
-		yy := make(map[int]map[int]color.Color, size)
+		yy := make(map[int]map[int][]float64, size)
 		for y := 0; y < size; y++ {
-			z := make(map[int]color.Color, size)
+			z := make(map[int][]float64, size)
 			yy[y] = z
 		}
 		d[x] = yy
@@ -34,11 +30,11 @@ func New(size int) Cube {
 }
 
 // Get will return the color at a given point
-func (c Cube) Get(x, y, z int) color.Color {
+func (c Cube) Get(x, y, z int) []float64 {
 	return c.Data[x][y][z]
 }
 
 // Set will set a color for the given point
-func (c Cube) Set(x, y, z int, val color.Color) {
+func (c Cube) Set(x, y, z int, val []float64) {
 	c.Data[x][y][z] = val
 }

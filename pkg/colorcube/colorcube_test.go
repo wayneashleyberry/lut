@@ -1,14 +1,13 @@
 package colorcube
 
 import (
-	"image/color"
 	"reflect"
 	"testing"
 )
 
 func TestCube_Get(t *testing.T) {
 	cube := New(32)
-	want := color.NRGBA{255, 255, 255, 255}
+	want := []float64{1, 1, 1}
 	cube.Set(1, 2, 3, want)
 	got := cube.Get(1, 2, 3)
 
