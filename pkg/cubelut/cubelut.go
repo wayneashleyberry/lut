@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/wayneashleyberry/lut/pkg/util"
+	"github.com/overhq/lut/pkg/util"
 )
 
 const bpc = 0xff
