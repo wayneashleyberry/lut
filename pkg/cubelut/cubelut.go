@@ -14,6 +14,7 @@ import (
 	"github.com/overhq/lut/pkg/util"
 )
 
+// bits per channel (we're assuming 8-bits)
 const bpc = 0xff
 
 // CubeFile implementation
@@ -137,7 +138,6 @@ func Apply(src image.Image, lut CubeFile, intensity float64) (image.Image, error
 		x := i % lut.Size
 		y := i / lut.Size % lut.Size
 		z := i / lut.Size / lut.Size
-		// cube[x][y][z] = []float64{lut.R[i], lut.G[i], lut.B[i]}
 		cube.Set(x, y, z, []float64{lut.R[i], lut.G[i], lut.B[i]})
 	}
 
