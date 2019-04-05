@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/wayneashleyberry/lut/pkg/cubelut"
-	"github.com/wayneashleyberry/lut/pkg/imagelut"
-	"github.com/wayneashleyberry/lut/pkg/util"
+	"github.com/overhq/lut/pkg/cubelut"
+	"github.com/overhq/lut/pkg/imagelut"
+	"github.com/overhq/lut/pkg/util"
 )
 
 func exit(err error) {
