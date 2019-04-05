@@ -6,12 +6,14 @@ package colorcube
 
 // Cube implementation
 type Cube struct {
-	Size int
-	Data map[int]map[int]map[int][]float64
+	Size      int
+	Data      map[int]map[int]map[int][]float64
+	DomainMin []float64
+	DomainMax []float64
 }
 
 // New will create a new Cube struct with the given size
-func New(size int) Cube {
+func New(size int, dmin, dmax []float64) Cube {
 	d := make(map[int]map[int]map[int][]float64, size)
 
 	for x := 0; x < size; x++ {
@@ -24,8 +26,10 @@ func New(size int) Cube {
 	}
 
 	return Cube{
-		Size: size,
-		Data: d,
+		Size:      size,
+		Data:      d,
+		DomainMin: dmin,
+		DomainMax: dmax,
 	}
 }
 
