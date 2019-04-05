@@ -10,6 +10,7 @@ import (
 
 	"github.com/overhq/lut/pkg/cubelut"
 	"github.com/overhq/lut/pkg/imagelut"
+	"github.com/overhq/lut/pkg/transform"
 	"github.com/overhq/lut/pkg/util"
 	"github.com/spf13/cobra"
 )
@@ -52,25 +53,31 @@ func main() {
 
 				r := bufio.NewReader(file)
 
-				cube, err := cubelut.Parse(r)
+				cubefile, err := cubelut.Parse(r)
 				if err != nil {
 					exit(err)
 				}
 
-				img, err := cubelut.Apply(srcimg, cube, intensity)
+				cube := cubefile.Cube()
+
+				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
 					exit(err)
 				}
 
 				out = img
-
 			default:
 				lutimg, err := util.ReadImage(lutfile)
 				if err != nil {
 					exit(err)
 				}
 
-				img, err := imagelut.Apply(srcimg, lutimg, intensity)
+				cube, err := imagelut.Parse(lutimg)
+				if err != nil {
+					exit(err)
+				}
+
+				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
 					exit(err)
 				}
