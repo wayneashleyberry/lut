@@ -24,7 +24,7 @@ type CubeFile struct {
 }
 
 // Parse will parse an io.Reader and return a CubeFile
-func Parse(r io.Reader) (colorcube.Cube, error) {
+func Parse(r io.Reader) (CubeFile, error) {
 	o := CubeFile{}
 
 	// Defaults
@@ -59,7 +59,7 @@ func Parse(r io.Reader) (colorcube.Cube, error) {
 			s := strings.ReplaceAll(line, "DOMAIN_MIN", "")
 			min := util.ParseFloats(s, 8)
 			if len(min) != 3 {
-				return colorcube.Cube{}, errors.New("invalid domain min values")
+				return o, errors.New("invalid domain min values")
 			}
 			o.DomainMin = min
 			continue
@@ -69,7 +69,7 @@ func Parse(r io.Reader) (colorcube.Cube, error) {
 			s := strings.ReplaceAll(line, "DOMAIN_MAX", "")
 			max := util.ParseFloats(s, 8)
 			if len(max) != 3 {
-				return colorcube.Cube{}, errors.New("invalid domain max values")
+				return o, errors.New("invalid domain max values")
 			}
 			o.DomainMax = max
 			continue
@@ -79,7 +79,7 @@ func Parse(r io.Reader) (colorcube.Cube, error) {
 			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
 			n, err := strconv.ParseInt(s, 0, 64)
 			if err != nil {
-				return colorcube.Cube{}, err
+				return o, err
 			}
 
 			o.Size = int(n)
@@ -101,21 +101,25 @@ func Parse(r io.Reader) (colorcube.Cube, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return colorcube.Cube{}, err
+		return o, err
 	}
 
 	if o.Size == 0 {
-		return colorcube.Cube{}, errors.New("invalid lut size")
+		return o, errors.New("invalid lut size")
 	}
 
-	cube := colorcube.New(o.Size, o.DomainMin, o.DomainMax)
+	return o, nil
+}
 
-	for i := 0; i < o.Size*o.Size*o.Size; i++ {
-		x := i % o.Size
-		y := i / o.Size % o.Size
-		z := i / o.Size / o.Size
-		cube.Set(x, y, z, []float64{o.R[i], o.G[i], o.B[i]})
+func (cf CubeFile) Cube() colorcube.Cube {
+	cube := colorcube.New(cf.Size, cf.DomainMin, cf.DomainMax)
+
+	for i := 0; i < cf.Size*cf.Size*cf.Size; i++ {
+		x := i % cf.Size
+		y := i / cf.Size % cf.Size
+		z := i / cf.Size / cf.Size
+		cube.Set(x, y, z, []float64{cf.R[i], cf.G[i], cf.B[i]})
 	}
 
-	return cube, nil
+	return cube
 }

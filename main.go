@@ -53,10 +53,12 @@ func main() {
 
 				r := bufio.NewReader(file)
 
-				cube, err := cubelut.Parse(r)
+				cubefile, err := cubelut.Parse(r)
 				if err != nil {
 					exit(err)
 				}
+
+				cube := cubefile.Cube()
 
 				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
