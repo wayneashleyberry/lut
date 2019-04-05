@@ -1,8 +1,12 @@
 > LUT contains command-line tools and Go packages for applying colour adjustments to images using lookup tables.
 
+[![wercker status](https://app.wercker.com/status/d6c0d4f2a9fbe670e8a1b11ad161a053/s/master "wercker status")](https://app.wercker.com/project/byKey/d6c0d4f2a9fbe670e8a1b11ad161a053)
+
 ### Motivation and caveats
 
-I wrote this command-line tool and package to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
+This command-line tool and packages were written to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
+
+There are tons of free LUT's available online, [LUTHOUSE](https://www.luthouse.com/free-luts) has some of my favourite.
 
 ### Usage
 
@@ -35,27 +39,12 @@ go run main.go
 
 ### Supported Features
 
-- Images stored in `.jpeg` or `.png` files
 - 3D LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
-- LUT's stored in 512x512 `jpeg` or `png` images
+- Image LUT's stored in 512x512 `jpeg` or `png` images
 - Filter intensity
+- Trilinear interpolation
 
 ### Not yet supported
 
-- Interpolation of any kind
 - Image LUT's of arbitrary sizes
 - 2d `.cube` files
-- 3d `.cube` files are assumed to have a domain between `0.0` and `1.0`
-
-### Examples
-
-```sh
-go run main.go apply testdata/sample.jpg --lut testdata/filter.png --out testdata/output.jpg
-```
-
-| Input                                                                                           | LUT                                                                                        | Output                                                                                  |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| ![an unfiltered image](https://raw.githubusercontent.com/overhq/lut/master/testdata/sample.jpg) | ![a lookup table](https://raw.githubusercontent.com/overhq/lut/master/testdata/filter.png) | ![the result](https://raw.githubusercontent.com/overhq/lut/master/testdata/output.jpg)  |
-| ![an unfiltered image](https://raw.githubusercontent.com/overhq/lut/master/testdata/sample.jpg) | [du04.cube](https://raw.githubusercontent.com/overhq/lut/master/testdata/du04.cube)        | ![the result](https://raw.githubusercontent.com/overhq/lut/master/testdata/output2.jpg) |
-
-There are tons of free LUT's available online, [LUTHOUSE](https://www.luthouse.com/free-luts) has some of my favourite.

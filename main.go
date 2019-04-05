@@ -8,10 +8,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/overhq/lut/pkg/cubelut"
 	"github.com/overhq/lut/pkg/imagelut"
 	"github.com/overhq/lut/pkg/util"
+	"github.com/spf13/cobra"
 )
 
 func exit(err error) {

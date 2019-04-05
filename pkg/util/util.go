@@ -8,6 +8,8 @@ import (
 	"image/png"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 )
 
 // ReadImage will try and read any supported image type from a filename.
@@ -50,4 +52,18 @@ func WriteImage(filename string, img image.Image) error {
 	default:
 		return errors.New("unsupported output type")
 	}
+}
+
+// ParseFloats will parse space delimted floats from a string
+func ParseFloats(in string, bitSize int) []float64 {
+	s := strings.TrimSpace(in)
+	parts := strings.Split(s, " ")
+	o := []float64{}
+	for _, part := range parts {
+		f, err := strconv.ParseFloat(part, bitSize)
+		if err == nil {
+			o = append(o, f)
+		}
+	}
+	return o
 }
