@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/overhq/lut/cmd/apply"
+	"github.com/overhq/lut/cmd/convert"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +20,10 @@ func main() {
 		},
 	}
 
-	cmd.AddCommand(apply.Command())
+	cmd.AddCommand(
+		apply.Command(),
+		convert.Command(),
+	)
 
 	cmd.AddCommand(&cobra.Command{
 		Use:   "version",

@@ -3,6 +3,7 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -11,6 +12,13 @@ import (
 	"strconv"
 	"strings"
 )
+
+// Exit will shut down the process with a simple error message
+// and the correct error code
+func Exit(err error) {
+	fmt.Println(err)
+	os.Exit(1)
+}
 
 // ReadImage will try and read any supported image type from a filename.
 func ReadImage(filename string) (image.Image, error) {
