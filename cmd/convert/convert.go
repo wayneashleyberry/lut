@@ -1,10 +1,16 @@
 package convert
 
 import (
+	"bufio"
 	"errors"
+	"io/ioutil"
+	"os"
 	"path"
 	"strings"
 
+	"github.com/overhq/lut/pkg/colorcube"
+	"github.com/overhq/lut/pkg/cubelut"
+	"github.com/overhq/lut/pkg/imagelut"
 	"github.com/overhq/lut/pkg/util"
 	"github.com/spf13/cobra"
 )
@@ -19,24 +25,64 @@ func Command() *cobra.Command {
 			in := args[0]
 			out := args[1]
 
+			if strings.ToLower(path.Ext(in)) == strings.ToLower(path.Ext(out)) {
+				util.Exit(errors.New("no conversion to be made"))
+			}
+
+			var cube colorcube.Cube
+
 			switch strings.ToLower(path.Ext(in)) {
 			case ".cube":
-				// TODO
+				file, err := os.Open(in)
+				if err != nil {
+					util.Exit(err)
+				}
+				defer file.Close()
+
+				r := bufio.NewReader(file)
+
+				cubefile, err := cubelut.Parse(r)
+				if err != nil {
+					util.Exit(err)
+				}
+
+				cube = cubefile.Cube()
 			case ".png":
+				fallthrough
 			case ".jpeg":
+				fallthrough
 			case ".jpg":
-				// TODO
+				lutimg, err := util.ReadImage(in)
+				if err != nil {
+					util.Exit(err)
+				}
+
+				cube, err = imagelut.Parse(lutimg)
+				if err != nil {
+					util.Exit(err)
+				}
 			default:
 				util.Exit(errors.New("unsupported file type: " + in))
 			}
 
 			switch strings.ToLower(path.Ext(out)) {
 			case ".cube":
-				// TODO
+				f := cubelut.FromColorCube(cube)
+				s := f.String()
+
+				err := ioutil.WriteFile(out, []byte(s), 0777)
+				if err != nil {
+					util.Exit(err)
+				}
 			case ".png":
 			case ".jpeg":
 			case ".jpg":
-				// TODO
+				img := imagelut.FromColorCube(cube)
+
+				err := util.WriteImage(out, img)
+				if err != nil {
+					util.Exit(err)
+				}
 			default:
 				util.Exit(errors.New("unsupported file type: " + out))
 			}

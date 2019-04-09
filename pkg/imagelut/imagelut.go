@@ -8,6 +8,11 @@ import (
 	"github.com/overhq/lut/pkg/colorcube"
 )
 
+// FromColorCube will create an image from a color cube
+func FromColorCube(cube colorcube.Cube) image.Image {
+	return &image.NRGBA{}
+}
+
 // Parse implementation
 func Parse(src image.Image) (colorcube.Cube, error) {
 	// hardcoded defaults

@@ -56,7 +56,9 @@ func Command() *cobra.Command {
 
 				out = img
 			case ".png":
+				fallthrough
 			case ".jpg":
+				fallthrough
 			case ".jpeg":
 				lutimg, err := util.ReadImage(lutfile)
 				if err != nil {

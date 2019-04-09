@@ -23,6 +23,11 @@ type CubeFile struct {
 	B          []float64
 }
 
+// FromColorCube will create a cube file from a color cube
+func FromColorCube(cube colorcube.Cube) CubeFile {
+	return CubeFile{}
+}
+
 // Parse will parse an io.Reader and return a CubeFile
 func Parse(r io.Reader) (CubeFile, error) {
 	o := CubeFile{}
@@ -111,6 +116,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 	return o, nil
 }
 
+// Cube will convert a cube file into a color cube
 func (cf CubeFile) Cube() colorcube.Cube {
 	cube := colorcube.New(cf.Size, cf.DomainMin, cf.DomainMax)
 
@@ -122,4 +128,9 @@ func (cf CubeFile) Cube() colorcube.Cube {
 	}
 
 	return cube
+}
+
+// String implementation
+func (cf CubeFile) String() string {
+	return "..."
 }
