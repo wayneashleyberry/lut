@@ -10,7 +10,30 @@ import (
 
 // FromColorCube will create an image from a color cube
 func FromColorCube(cube colorcube.Cube) image.Image {
-	return &image.NRGBA{}
+	out := image.NewNRGBA(image.Rectangle{
+		image.Point{0, 0},
+		image.Point{cube.Size * 8, cube.Size * 8},
+	})
+
+	for z := 0; z < cube.Size; z++ {
+		for x := 0; x < cube.Size; x++ {
+			for y := 0; y < cube.Size; y++ {
+				imgx := (z % 8 * cube.Size) + x
+				imgy := (z / 8 * cube.Size) + y
+				rgb := cube.Get(x, y, z)
+				out.SetNRGBA(
+					imgx, imgy, color.NRGBA{
+						R: uint8(rgb[0] * 0xff),
+						G: uint8(rgb[1] * 0xff),
+						B: uint8(rgb[2] * 0xff),
+						A: 0xff,
+					},
+				)
+			}
+		}
+	}
+
+	return out
 }
 
 // Parse implementation

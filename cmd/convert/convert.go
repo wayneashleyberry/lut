@@ -47,10 +47,6 @@ func Command() *cobra.Command {
 
 				cube = cubefile.Cube()
 			case ".png":
-				fallthrough
-			case ".jpeg":
-				fallthrough
-			case ".jpg":
 				lutimg, err := util.ReadImage(in)
 				if err != nil {
 					util.Exit(err)
@@ -85,8 +81,6 @@ func Command() *cobra.Command {
 					util.Exit(err)
 				}
 			case ".png":
-			case ".jpeg":
-			case ".jpg":
 				img := imagelut.FromColorCube(cube)
 
 				err := util.WriteImage(out, img)
