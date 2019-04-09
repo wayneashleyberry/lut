@@ -3,7 +3,6 @@ package apply
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"image"
 	"os"
 	"path"
@@ -15,11 +14,6 @@ import (
 	"github.com/overhq/lut/pkg/util"
 	"github.com/spf13/cobra"
 )
-
-func exit(err error) {
-	fmt.Println(err)
-	os.Exit(1)
-}
 
 // Command will create a new "apply" command
 func Command() *cobra.Command {
@@ -33,7 +27,7 @@ func Command() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			srcimg, err := util.ReadImage(args[0])
 			if err != nil {
-				exit(err)
+				util.Exit(err)
 			}
 
 			var out image.Image
@@ -42,7 +36,7 @@ func Command() *cobra.Command {
 			case ".cube":
 				file, err := os.Open(lutfile)
 				if err != nil {
-					exit(err)
+					util.Exit(err)
 				}
 				defer file.Close()
 
@@ -50,14 +44,14 @@ func Command() *cobra.Command {
 
 				cubefile, err := cubelut.Parse(r)
 				if err != nil {
-					exit(err)
+					util.Exit(err)
 				}
 
 				cube := cubefile.Cube()
 
 				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
-					exit(err)
+					util.Exit(err)
 				}
 
 				out = img
@@ -66,26 +60,26 @@ func Command() *cobra.Command {
 			case ".jpeg":
 				lutimg, err := util.ReadImage(lutfile)
 				if err != nil {
-					exit(err)
+					util.Exit(err)
 				}
 
 				cube, err := imagelut.Parse(lutimg)
 				if err != nil {
-					exit(err)
+					util.Exit(err)
 				}
 
 				img, err := transform.Image(srcimg, cube, intensity)
 				if err != nil {
-					exit(err)
+					util.Exit(err)
 				}
 
 				out = img
 			default:
-				exit(errors.New("unsupported file type"))
+				util.Exit(errors.New("unsupported file type"))
 			}
 
 			if err := util.WriteImage(outfile, out); err != nil {
-				exit(err)
+				util.Exit(err)
 			}
 		},
 	}
