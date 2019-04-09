@@ -3,7 +3,6 @@ package convert
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -61,13 +60,9 @@ func Command() *cobra.Command {
 				util.Exit(errors.New("unsupported file type: " + in))
 			}
 
-			fmt.Println("PARSED")
-
 			switch strings.ToLower(path.Ext(out)) {
 			case ".cube":
 				f := cubelut.FromColorCube(cube)
-
-				fmt.Println("CREATED CUBE FILE")
 
 				filename := filepath.Base(in)
 				extension := filepath.Ext(filename)

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/overhq/lut/cmd/apply"
 	"github.com/overhq/lut/cmd/convert"
+	"github.com/overhq/lut/pkg/util"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +34,6 @@ func main() {
 	})
 
 	if err := cmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		util.Exit(err)
 	}
 }
