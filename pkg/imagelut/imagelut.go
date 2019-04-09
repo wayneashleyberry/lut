@@ -21,14 +21,12 @@ func FromColorCube(cube colorcube.Cube) image.Image {
 				imgx := (z % 8 * cube.Size) + x
 				imgy := (z / 8 * cube.Size) + y
 				rgb := cube.Get(x, y, z)
-				out.SetNRGBA(
-					imgx, imgy, color.NRGBA{
-						R: uint8(rgb[0] * 0xff),
-						G: uint8(rgb[1] * 0xff),
-						B: uint8(rgb[2] * 0xff),
-						A: 0xff,
-					},
-				)
+				out.SetNRGBA(imgx, imgy, color.NRGBA{
+					R: uint8(rgb[0] * 0xff),
+					G: uint8(rgb[1] * 0xff),
+					B: uint8(rgb[2] * 0xff),
+					A: 0xff,
+				})
 			}
 		}
 	}
