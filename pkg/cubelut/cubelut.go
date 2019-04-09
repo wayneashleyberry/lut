@@ -26,10 +26,18 @@ type CubeFile struct {
 
 // FromColorCube will create a cube file from a color cube
 func FromColorCube(cube colorcube.Cube) CubeFile {
+	r := []float64{}
+	g := []float64{}
+	b := []float64{}
+
 	return CubeFile{
-		Size:      cube.Size,
-		DomainMin: cube.DomainMin,
-		DomainMax: cube.DomainMax,
+		Dimensions: 3,
+		DomainMax:  cube.DomainMax,
+		DomainMin:  cube.DomainMin,
+		Size:       cube.Size,
+		R:          r,
+		G:          g,
+		B:          b,
 	}
 }
 

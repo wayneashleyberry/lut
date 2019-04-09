@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -26,10 +27,6 @@ func Command() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			in := args[0]
 			out := args[1]
-
-			if strings.ToLower(path.Ext(in)) == strings.ToLower(path.Ext(out)) {
-				util.Exit(errors.New("no conversion to be made"))
-			}
 
 			var cube colorcube.Cube
 
@@ -72,9 +69,15 @@ func Command() *cobra.Command {
 			switch strings.ToLower(path.Ext(out)) {
 			case ".cube":
 				f := cubelut.FromColorCube(cube)
-				f.Title = "..."
+
+				filename := filepath.Base(in)
+				extension := filepath.Ext(filename)
+				name := filename[0 : len(filename)-len(extension)]
+
+				f.Title = name
 
 				output := fmt.Sprintf(`# Converted from "%s" at "%s"`, in, time.Now())
+				output += "\n"
 				output += f.String()
 
 				err := ioutil.WriteFile(out, []byte(output), 0777)
