@@ -2,6 +2,7 @@ package cubelut
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -153,17 +154,19 @@ func (cf CubeFile) Cube() colorcube.Cube {
 	return cube
 }
 
-// String implementation
-func (cf CubeFile) String() string {
-	header := fmt.Sprintf(`TITLE "%s"
+// Bytes implementation
+func (cf CubeFile) Bytes() []byte {
+	var b bytes.Buffer
+
+	fmt.Fprintf(&b, `TITLE "%s"
 LUT_3D_SIZE %d
 DOMAIN_MIN %.1f %.1f %.1f
 DOMAIN_MAX %.1f %.1f %.1f
 `, cf.Title, cf.Size, cf.DomainMin[0], cf.DomainMin[1], cf.DomainMin[2], cf.DomainMax[0], cf.DomainMax[1], cf.DomainMax[2])
 
 	for i := range cf.R {
-		header += fmt.Sprintf("%.6f %.6f %.6f\n", cf.R[i], cf.G[i], cf.B[i])
+		fmt.Fprintf(&b, "%.6f %.6f %.6f\n", cf.R[i], cf.G[i], cf.B[i])
 	}
 
-	return header
+	return b.Bytes()
 }

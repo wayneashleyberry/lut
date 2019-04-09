@@ -9,7 +9,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/overhq/lut/pkg/colorcube"
 	"github.com/overhq/lut/pkg/cubelut"
@@ -62,9 +61,13 @@ func Command() *cobra.Command {
 				util.Exit(errors.New("unsupported file type: " + in))
 			}
 
+			fmt.Println("PARSED")
+
 			switch strings.ToLower(path.Ext(out)) {
 			case ".cube":
 				f := cubelut.FromColorCube(cube)
+
+				fmt.Println("CREATED CUBE FILE")
 
 				filename := filepath.Base(in)
 				extension := filepath.Ext(filename)
@@ -72,11 +75,7 @@ func Command() *cobra.Command {
 
 				f.Title = name
 
-				output := fmt.Sprintf(`# Converted from "%s" at "%s"`, in, time.Now())
-				output += "\n"
-				output += f.String()
-
-				err := ioutil.WriteFile(out, []byte(output), 0777)
+				err := ioutil.WriteFile(out, f.Bytes(), 0777)
 				if err != nil {
 					util.Exit(err)
 				}
