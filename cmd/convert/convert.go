@@ -3,10 +3,12 @@ package convert
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/overhq/lut/pkg/colorcube"
 	"github.com/overhq/lut/pkg/cubelut"
@@ -57,10 +59,12 @@ func Command() *cobra.Command {
 					util.Exit(err)
 				}
 
-				cube, err = imagelut.Parse(lutimg)
+				c, err := imagelut.Parse(lutimg)
 				if err != nil {
 					util.Exit(err)
 				}
+
+				cube = c
 			default:
 				util.Exit(errors.New("unsupported file type: " + in))
 			}
@@ -68,9 +72,12 @@ func Command() *cobra.Command {
 			switch strings.ToLower(path.Ext(out)) {
 			case ".cube":
 				f := cubelut.FromColorCube(cube)
-				s := f.String()
+				f.Title = "..."
 
-				err := ioutil.WriteFile(out, []byte(s), 0777)
+				output := fmt.Sprintf(`# Converted from "%s" at "%s"`, in, time.Now())
+				output += f.String()
+
+				err := ioutil.WriteFile(out, []byte(output), 0777)
 				if err != nil {
 					util.Exit(err)
 				}

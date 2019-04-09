@@ -3,6 +3,7 @@ package cubelut
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io"
 	"strconv"
 	"strings"
@@ -25,7 +26,11 @@ type CubeFile struct {
 
 // FromColorCube will create a cube file from a color cube
 func FromColorCube(cube colorcube.Cube) CubeFile {
-	return CubeFile{}
+	return CubeFile{
+		Size:      cube.Size,
+		DomainMin: cube.DomainMin,
+		DomainMax: cube.DomainMax,
+	}
 }
 
 // Parse will parse an io.Reader and return a CubeFile
@@ -132,5 +137,11 @@ func (cf CubeFile) Cube() colorcube.Cube {
 
 // String implementation
 func (cf CubeFile) String() string {
-	return "..."
+	header := fmt.Sprintf(`TITLE "%s"
+LUT_3D_SIZE %d
+DOMAIN_MIN %.1f %.1f %.1f
+DOMAIN_MAX %.1f %.1f %.1f
+`, cf.Title, cf.Size, cf.DomainMin[0], cf.DomainMin[1], cf.DomainMin[2], cf.DomainMax[0], cf.DomainMax[1], cf.DomainMax[2])
+
+	return header
 }
