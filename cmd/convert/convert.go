@@ -70,7 +70,7 @@ func Command() *cobra.Command {
 
 				f.Title = name
 
-				err := ioutil.WriteFile(out, f.Bytes(), 0777)
+				err := ioutil.WriteFile(out, f.Bytes(), 0644)
 				if err != nil {
 					util.Exit(err)
 				}
