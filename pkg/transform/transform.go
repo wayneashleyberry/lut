@@ -2,9 +2,11 @@ package transform
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"math"
+	"runtime"
 
 	"github.com/overhq/lut/pkg/colorcube"
 )
@@ -17,6 +19,8 @@ func Image(src image.Image, cube colorcube.Cube, intensity float64) (image.Image
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")
 	}
+
+	fmt.Println(runtime.NumCPU())
 
 	bounds := src.Bounds()
 
