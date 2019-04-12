@@ -96,7 +96,12 @@ func Command() *cobra.Command {
 				case "tetra":
 					util.TODO()
 				case "none":
-					util.TODO()
+					img, err := imagelut.Apply(srcimg, lutimg, intensity)
+					if err != nil {
+						util.Exit(err)
+					}
+
+					out = img
 				default:
 					util.Exit(ErrInvalidInterpolation)
 				}
