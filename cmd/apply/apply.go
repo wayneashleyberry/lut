@@ -19,9 +19,10 @@ import (
 func Command() *cobra.Command {
 	var lutfile, outfile string
 	var intensity float64
+	var interp string
 
 	cmd := &cobra.Command{
-		Use:   "apply [source.png] --lut sepia.png --out image.png",
+		Use:   "apply [source.png] --lut sepia.png --out image.png --interp none",
 		Short: "Adjust image colour according to a LUT",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -87,6 +88,9 @@ func Command() *cobra.Command {
 	}
 
 	cmd.Flags().Float64VarP(&intensity, "intensity", "", 1, "Intensity of the applied effect")
+	cmd.Flags().StringVarP(&interp, "interp", "i", "trilinear", "Interpolation")
+
+	// Required flags
 	cmd.Flags().StringVarP(&lutfile, "lut", "", "", "Path to LUT [required]")
 	cmd.Flags().StringVarP(&outfile, "out", "o", "", "Path to write output [required]")
 
