@@ -13,6 +13,11 @@ import (
 	"strings"
 )
 
+// TODO acts as a placeholder
+func TODO() {
+	panic("not yet implemented")
+}
+
 // Exit will shut down the process with a simple error message
 // and the correct error code
 func Exit(err error) {
@@ -43,6 +48,10 @@ func ReadImage(filename string) (image.Image, error) {
 
 // WriteImage will try to write an image.Image to the given file name.
 func WriteImage(filename string, img image.Image) error {
+	if img == nil {
+		return errors.New("nil image")
+	}
+
 	ext := path.Ext(filename)
 	switch ext {
 	case ".jpg":

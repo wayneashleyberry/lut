@@ -15,6 +15,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Error types
+var (
+	ErrInvalidInterpolation = errors.New("invalid interpolation, accepted values are `none`, `tri` and `interp`")
+)
+
 // Command will create a new "apply" command
 func Command() *cobra.Command {
 	var lutfile, outfile string
@@ -29,10 +34,6 @@ func Command() *cobra.Command {
 			srcimg, err := util.ReadImage(args[0])
 			if err != nil {
 				util.Exit(err)
-			}
-
-			if interp != "none" && interp != "tri" {
-				util.Exit(errors.New("invalid interpolation, accepted values are `none` and `tri`"))
 			}
 
 			var out image.Image
@@ -52,14 +53,23 @@ func Command() *cobra.Command {
 					util.Exit(err)
 				}
 
-				cube := cubefile.Cube()
+				switch interp {
+				case "tri":
+					cube := cubefile.Cube()
 
-				img, err := transform.Image(srcimg, cube, intensity)
-				if err != nil {
-					util.Exit(err)
+					img, err := transform.Image(srcimg, cube, intensity)
+					if err != nil {
+						util.Exit(err)
+					}
+
+					out = img
+				case "tetra":
+					util.TODO()
+				case "none":
+					util.TODO()
+				default:
+					util.Exit(ErrInvalidInterpolation)
 				}
-
-				out = img
 			case ".png":
 				fallthrough
 			case ".jpg":
@@ -70,17 +80,27 @@ func Command() *cobra.Command {
 					util.Exit(err)
 				}
 
-				cube, err := imagelut.Parse(lutimg)
-				if err != nil {
-					util.Exit(err)
+				switch interp {
+				case "tri":
+					cube, err := imagelut.Parse(lutimg)
+					if err != nil {
+						util.Exit(err)
+					}
+
+					img, err := transform.Image(srcimg, cube, intensity)
+					if err != nil {
+						util.Exit(err)
+					}
+
+					out = img
+				case "tetra":
+					util.TODO()
+				case "none":
+					util.TODO()
+				default:
+					util.Exit(ErrInvalidInterpolation)
 				}
 
-				img, err := transform.Image(srcimg, cube, intensity)
-				if err != nil {
-					util.Exit(err)
-				}
-
-				out = img
 			default:
 				util.Exit(errors.New("unsupported file type"))
 			}
