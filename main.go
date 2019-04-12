@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/overhq/lut/cmd/apply"
 	"github.com/overhq/lut/cmd/convert"
@@ -33,7 +34,11 @@ func main() {
 		},
 	})
 
+	t := time.Now()
+
 	if err := cmd.Execute(); err != nil {
 		util.Exit(err)
 	}
+
+	fmt.Println(time.Since(t))
 }

@@ -28,14 +28,16 @@ func ReadImage(filename string) (image.Image, error) {
 	}
 	defer file.Close()
 
-	ext := path.Ext(filename)
+	ext := strings.ToLower(path.Ext(filename))
 	switch ext {
 	case ".jpg":
+		fallthrough
+	case ".jpeg":
 		return jpeg.Decode(file)
 	case ".png":
 		return png.Decode(file)
 	default:
-		return nil, errors.New("unsupported output type")
+		return nil, errors.New("unsupported output type: " + filename)
 	}
 }
 
