@@ -66,7 +66,12 @@ func Command() *cobra.Command {
 				case "tetra":
 					util.TODO()
 				case "none":
-					util.TODO()
+					img, err := cubefile.Apply(srcimg, intensity)
+					if err != nil {
+						util.Exit(err)
+					}
+
+					out = img
 				default:
 					util.Exit(ErrInvalidInterpolation)
 				}
