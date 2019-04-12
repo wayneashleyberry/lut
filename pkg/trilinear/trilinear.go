@@ -1,4 +1,5 @@
-package transform
+// Package trilinear implements trilinear interpolation
+package trilinear
 
 import (
 	"errors"
@@ -12,8 +13,9 @@ import (
 // bits per channel (we're assuming 8-bits)
 const bpc = 0xff
 
-// Image implementation
-func Image(src image.Image, cube colorcube.Cube, intensity float64) (image.Image, error) {
+// Interpolate will apply color transformations to the provided image using
+// trilinear interpolation (taking the intensity multiplier into account)
+func Interpolate(src image.Image, cube colorcube.Cube, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")
 	}

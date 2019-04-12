@@ -10,7 +10,7 @@ import (
 
 	"github.com/overhq/lut/pkg/cubelut"
 	"github.com/overhq/lut/pkg/imagelut"
-	"github.com/overhq/lut/pkg/transform"
+	"github.com/overhq/lut/pkg/trilinear"
 	"github.com/overhq/lut/pkg/util"
 	"github.com/spf13/cobra"
 )
@@ -57,7 +57,7 @@ func Command() *cobra.Command {
 				case "tri":
 					cube := cubefile.Cube()
 
-					img, err := transform.Image(srcimg, cube, intensity)
+					img, err := trilinear.Interpolate(srcimg, cube, intensity)
 					if err != nil {
 						util.Exit(err)
 					}
@@ -87,7 +87,7 @@ func Command() *cobra.Command {
 						util.Exit(err)
 					}
 
-					img, err := transform.Image(srcimg, cube, intensity)
+					img, err := trilinear.Interpolate(srcimg, cube, intensity)
 					if err != nil {
 						util.Exit(err)
 					}
