@@ -5,7 +5,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"image"
+	"image/color"
 	"io"
+	"math"
 	"strconv"
 	"strings"
 
@@ -169,4 +172,48 @@ DOMAIN_MAX %.1f %.1f %.1f
 	}
 
 	return b.Bytes()
+}
+
+// Apply implementation
+func (cf CubeFile) Apply(src image.Image, intensity float64) (image.Image, error) {
+	if intensity < 0 || intensity > 1 {
+		return src, errors.New("intensity must be between 0 and 1")
+	}
+
+	bounds := src.Bounds()
+
+	out := image.NewNRGBA(image.Rectangle{
+		image.Point{0, 0},
+		image.Point{bounds.Max.X, bounds.Max.Y},
+	})
+
+	space := &image.NRGBA{}
+	model := space.ColorModel()
+
+	N := float64(cf.Size)
+
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			px := src.At(x, y)
+			c := model.Convert(px).(color.NRGBA)
+
+			r := math.Floor((float64(c.R) / 255.0) * (N - 1))
+			g := math.Floor((float64(c.G) / 255.0) * (N - 1))
+			b := math.Floor((float64(c.B) / 255.0) * (N - 1))
+
+			i := r + N*g + N*N*b
+
+			lr, lg, lb := uint8(cf.R[int(i)]*255), uint8(cf.G[int(i)]*255), uint8(cf.B[int(i)]*255)
+
+			o := color.NRGBA{}
+			o.R = uint8(float64(c.R)*(1-intensity) + float64(lr)*intensity)
+			o.G = uint8(float64(c.G)*(1-intensity) + float64(lg)*intensity)
+			o.B = uint8(float64(c.B)*(1-intensity) + float64(lb)*intensity)
+			o.A = c.A
+
+			out.Set(x, y, o)
+		}
+	}
+
+	return out, nil
 }

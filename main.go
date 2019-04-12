@@ -14,19 +14,19 @@ var version string
 var date string
 
 func main() {
-	cmd := &cobra.Command{
+	root := &cobra.Command{
 		Use: "lut",
 		Run: func(cmd *cobra.Command, args []string) {
 			_ = cmd.Usage()
 		},
 	}
 
-	cmd.AddCommand(
+	root.AddCommand(
 		apply.Command(),
 		convert.Command(),
 	)
 
-	cmd.AddCommand(&cobra.Command{
+	root.AddCommand(&cobra.Command{
 		Use:   "version",
 		Short: "Print version information",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -34,11 +34,16 @@ func main() {
 		},
 	})
 
+	var verbose bool
+	root.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+
 	t := time.Now()
 
-	if err := cmd.Execute(); err != nil {
+	if err := root.Execute(); err != nil {
 		util.Exit(err)
 	}
 
-	fmt.Println(time.Since(t))
+	if verbose {
+		fmt.Println(time.Since(t))
+	}
 }
