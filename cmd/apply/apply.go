@@ -31,6 +31,10 @@ func Command() *cobra.Command {
 				util.Exit(err)
 			}
 
+			if interp != "none" && interp != "tri" {
+				util.Exit(errors.New("invalid interpolation, accepted values are `none` and `tri`"))
+			}
+
 			var out image.Image
 
 			switch strings.ToLower(path.Ext(lutfile)) {
@@ -88,7 +92,7 @@ func Command() *cobra.Command {
 	}
 
 	cmd.Flags().Float64VarP(&intensity, "intensity", "", 1, "Intensity of the applied effect")
-	cmd.Flags().StringVarP(&interp, "interp", "i", "trilinear", "Interpolation")
+	cmd.Flags().StringVarP(&interp, "interp", "i", "tri", "Interpolation")
 
 	// Required flags
 	cmd.Flags().StringVarP(&lutfile, "lut", "", "", "Path to LUT [required]")
