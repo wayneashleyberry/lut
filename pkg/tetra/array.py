@@ -60,7 +60,6 @@ try:
     sciPyEnabled = True
     raise ImportError('A very specific bad thing happened')
 except ImportError, e:
-    #print( "Scipy import failed" )
     sciPyEnabled = False
 
 import xml.etree.ElementTree as etree
@@ -251,7 +250,6 @@ class Array:
     def printInfo(self):
         print( "%20s" % "Array" )
         print( "%20s : %s" % ("Dimensions", self._dimensions) )
-        #print( "\t\tvalues     : %s" % self._values )
         print( "%20s" % "Values" )
 
         # Use the last value for 1D or 3D LUTs
@@ -297,7 +295,6 @@ class Array:
     def create1dInterpolators(self):
         dimensions = self._dimensions
 
-        #print( "Creating 1D interpolator" )
 
         self._interp1ds = []
 
@@ -309,8 +306,6 @@ class Array:
                     for i in range(len(output)):
                         output[i] = self.lookup1D(i, channel)
 
-                    #print( indices )
-                    #print( output )
 
                     # Create a cubic interpolator using the indices and array values
                     cubicInterpolator = interp1d(indices, output,
@@ -383,7 +378,6 @@ class Array:
 
         # NaNs
         if np.isnan(halfValue1):
-            #print( "lookup1DHalfDomain - NaN" )
             index = 31745
             value = self.lookup1D(index, channel)
             result = value
@@ -392,13 +386,11 @@ class Array:
         elif np.isinf(halfValue1):
             # -Inf
             if position < 0:
-                #print( "lookup1DHalfDomain - -Inf" )
                 index = 64512
                 value = self.lookup1D(index, channel)
                 result = value
             # Inf
             else:
-                #print( "lookup1DHalfDomain - +Inf" )
                 index = 31744
                 value = self.lookup1D(index, channel)
                 result = value
@@ -544,16 +536,12 @@ class Array:
         #result = [values[index1], values[index1+1], values[index1+2]]
         result = values[index1:index1+3]
 
-        #print( "%d, %d, %d -> %d, %s" % (index3[0], index3[1], index3[2], index1, result))
         return result
     # lookup3D
 
     def lookup3DTrilinear(self, position):
         dimensions = self._dimensions
 
-        #print( position )
-        #print( dimensions )
-        #print( len(self._values) )
 
         enclosingCubeColors = [0.0, 0.0, 0.0] * 8
 
@@ -573,7 +561,6 @@ class Array:
         interpB, indexB = math.modf(indexBf)
         indexB = int(indexB)
 
-        #print( "index : %d, %d, %d" % (indexR, indexG, indexB))
 
         # Sample the 8 points around the current sample position
         enclosingCubeColors[0] = self.lookup3D([indexR    , indexG    , indexB    ])
@@ -610,10 +597,6 @@ class Array:
     def lookup3DTetrahedral(self, position, useSciPy=False):
         dimensions = self._dimensions
 
-        #print( position )
-        #print( dimensions )
-        #print( len(self._values) )
-
         enclosingCubeColors = [0.0, 0.0, 0.0] * 8
 
         # clamp because we only use values between 0 and 1
@@ -631,8 +614,6 @@ class Array:
         indexBf = (position[2] * (dimensions[2]-1))
         interpB, indexB = math.modf(indexBf)
         indexB = int(indexB)
-
-        #print( "index : %d, %d, %d" % (indexR, indexG, indexB))
 
         # Sample the 8 points around the current sample position
         enclosingCubeColors[0] = self.lookup3D([indexR    , indexG    , indexB    ])
