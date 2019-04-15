@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# This sample implementation was taken from https://git.io/fjm7m
 
 """
 The Academy / ASC Common LUT Format Sample Implementations are provided by the
