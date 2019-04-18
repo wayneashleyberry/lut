@@ -82,13 +82,14 @@ func trilerp(x, y, z, c000, c001, c010, c011, c100, c101, c110, c111, x0, x1, y0
 }
 
 func clampToChannelSize(x int) int {
-	if x <= 0 {
+	switch {
+	case x <= 0:
 		return 0
-	}
-	if x >= bpc {
+	case x >= bpc:
 		return bpc
+	default:
+		return x
 	}
-	return x
 }
 
 func toIntCh(x float64) int {
@@ -106,9 +107,7 @@ func getFromRGBTrilinear(r, g, b, size int, k float64, cube colorcube.Cube) []fl
 	}
 
 	var fR0 int
-	if iR <= 0 {
-		fR0 = 0
-	} else {
+	if iR > 0 {
 		fR0 = clampToChannelSize(int(math.Floor(iR - 1)))
 	}
 
@@ -122,9 +121,7 @@ func getFromRGBTrilinear(r, g, b, size int, k float64, cube colorcube.Cube) []fl
 	}
 
 	var fG0 int
-	if iG <= 0 {
-		fG0 = 0
-	} else {
+	if iG > 0 {
 		fG0 = clampToChannelSize(int(math.Floor(iG - 1)))
 	}
 
@@ -138,9 +135,7 @@ func getFromRGBTrilinear(r, g, b, size int, k float64, cube colorcube.Cube) []fl
 	}
 
 	var fB0 int
-	if iB <= 0 {
-		fB0 = 0
-	} else {
+	if iB > 0 {
 		fB0 = clampToChannelSize(int(math.Floor(iB - 1)))
 	}
 
