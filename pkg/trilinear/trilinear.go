@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/overhq/lut/pkg/colorcube"
+	"github.com/overhq/lut/pkg/parallel"
 )
 
 // bits per channel (we're assuming 8-bits)
@@ -36,29 +37,32 @@ func Interpolate(src image.Image, cube colorcube.Cube, intensity float64) (image
 	dKG := cube.DomainMax[1] - cube.DomainMin[1]
 	dKB := cube.DomainMax[2] - cube.DomainMin[2]
 
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			px := src.At(x, y)
-			c := model.Convert(px).(color.NRGBA)
+	width, height := bounds.Dx(), bounds.Dy()
+	parallel.Line(height, func(start, end int) {
+		for y := start; y < end; y++ {
+			for x := 0; x < width; x++ {
+				px := src.At(x, y)
+				c := model.Convert(px).(color.NRGBA)
 
-			rgb := getFromRGBTrilinear(
-				int(c.R),
-				int(c.G),
-				int(c.B),
-				cube.Size,
-				k,
-				cube,
-			)
+				rgb := getFromRGBTrilinear(
+					int(c.R),
+					int(c.G),
+					int(c.B),
+					cube.Size,
+					k,
+					cube,
+				)
 
-			o := color.NRGBA{}
-			o.R = uint8(float64(c.R)*(1-intensity) + float64(toIntCh(rgb[0]*dKR))*intensity)
-			o.G = uint8(float64(c.G)*(1-intensity) + float64(toIntCh(rgb[1]*dKG))*intensity)
-			o.B = uint8(float64(c.B)*(1-intensity) + float64(toIntCh(rgb[2]*dKB))*intensity)
-			o.A = c.A
+				o := color.NRGBA{}
+				o.R = uint8(float64(c.R)*(1-intensity) + float64(toIntCh(rgb[0]*dKR))*intensity)
+				o.G = uint8(float64(c.G)*(1-intensity) + float64(toIntCh(rgb[1]*dKG))*intensity)
+				o.B = uint8(float64(c.B)*(1-intensity) + float64(toIntCh(rgb[2]*dKB))*intensity)
+				o.A = c.A
 
-			out.Set(x, y, o)
+				out.Set(x, y, o)
+			}
 		}
-	}
+	})
 
 	return out, nil
 }
