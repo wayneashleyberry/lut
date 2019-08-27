@@ -20,7 +20,7 @@ Read more about our homebrew tap [here](https://github.com/overhq/homebrew-tap#s
 
 ### Usage
 
-```
+```sh
 Usage:
   lut [flags]
   lut [command]
@@ -44,6 +44,7 @@ This project uses [Go modules](https://blog.golang.org/modules2019), so make sur
 ```sh
 git clone git@github.com:overhq/lut.git
 cd lut
+go mod download
 go run main.go
 ```
 
