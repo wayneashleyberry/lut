@@ -11,6 +11,7 @@ There are tons of free LUT's available online, [LUTHOUSE](https://www.luthouse.c
 ### Quickstart
 
 ```sh
+export HOMEBREW_GITHUB_API_TOKEN="..."
 brew tap overhq/homebrew-tap
 brew install overhq/tap/lut
 ```
