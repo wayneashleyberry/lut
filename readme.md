@@ -10,14 +10,12 @@ There are tons of free LUT's available online, [LUTHOUSE](https://www.luthouse.c
 
 ### Quickstart
 
-> :warning: You will need a `HOMEBREW_GITHUB_API_TOKEN` environment variable set to get access to our private homebrew tap.
-
 ```sh
 brew tap overhq/homebrew-tap
 brew install overhq/tap/lut
 ```
 
-[Binaries are available for you to download](https://github.com/overhq/lut/releases/latest) if you don't want to [write Go code](https://golang.org/doc/code.html).
+Read more about our homebrew tap [here](https://github.com/overhq/homebrew-tap#setup). Pre-compiled binaries are also available [here](https://github.com/overhq/lut/releases/latest).
 
 ### Usage
 
@@ -40,7 +38,7 @@ Use "lut [command] --help" for more information about a command.
 
 ### Installation
 
-This project uses [Go modules](https://blog.golang.org/modules2019), so make sure to clone it outside of your `$GOPATH`. You will need at least Go 1.11.
+This project uses [Go modules](https://blog.golang.org/modules2019), so make sure to clone it outside of your `$GOPATH`. You will need at least Go 1.12.
 
 ```sh
 git clone git@github.com:overhq/lut.git
@@ -51,7 +49,7 @@ go run main.go
 ### Supported Features
 
 - 3D LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
-- Image LUT's stored in 512x512 `jpeg` or `png` images
+- Squar image LUT's stored in 512x512 `jpeg` or `png` images
 - Filter intensity
 - Trilinear interpolation
 
