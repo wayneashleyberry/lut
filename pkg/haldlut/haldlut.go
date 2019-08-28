@@ -90,8 +90,8 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	space := &image.NRGBA{}
 	nrgba := space.ColorModel()
 
-	// space2 := &image.RGBA{}
-	// rgba := space2.ColorModel()
+	space2 := &image.RGBA{}
+	rgba := space2.ColorModel()
 
 	width, height := bounds.Dx(), bounds.Dy()
 	parallel.Line(height, func(start, end int) {
@@ -102,40 +102,33 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 				px := src.At(x, y)
 				c := nrgba.Convert(px).(color.NRGBA)
 
-				// Android reference implementation:
-				// float x = clamp(g % 8 * 64 + r, 0.0, 511.0);
-				// float y = clamp(floor(g/8.0f) + b * 8, 0.0, 511.0);
+				// float x = g % 8 * 64 + r
+				// float y = floor(g/8.0f) + b * 8
 
 				// find the location of the pixel in our lookup table
-				lutx := float64(c.G%8)*64 + float64(c.R)
+				lutx := (c.G%8)*64 + c.R
 				luty := math.Floor(float64(c.G)/8) + float64(c.B)*8
 
-				pixel := effect.At(int(lutx), int(luty))
-				pr, pg, pb, _ := pixel.RGBA()
-				pr = pr / 128
-				pg = pg / 128
-				pb = pb / 128
+				at := effect.At(int(lutx), int(luty))
+				lut := rgba.Convert(at).(color.RGBA)
+
+				// create our output colour, adjusted according to the intensity
+				o := color.NRGBA{}
+				o.R = uint8(float64(c.R)*(1-intensity) + float64(lut.R)*intensity)
+				o.G = uint8(float64(c.G)*(1-intensity) + float64(lut.G)*intensity)
+				o.B = uint8(float64(c.B)*(1-intensity) + float64(lut.B)*intensity)
+				o.A = c.A
 
 				fmt.Println(
 					"(", c.R, c.G, c.B, ")",
-					"{", int(lutx), ",", int(luty), "}",
-					"(", pr, pg, pb, ")",
+					"{", lutx, ",", luty, "}",
+					"(", o.R, o.G, o.B, ")",
 				)
 
-				out.Set(x, y, pixel)
+				out.Set(x, y, o)
 			}
 		}
 	})
 
 	return out, nil
 }
-
-// func clamp(val, min, max float64) float64 {
-// 	if val > max {
-// 		return max
-// 	}
-// 	if val < min {
-// 		return min
-// 	}
-// 	return val
-// }
