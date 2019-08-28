@@ -101,9 +101,14 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 				px := src.At(x, y)
 				c := nrgba.Convert(px).(color.NRGBA)
 
+				// Android reference implementation:
+				// float x = clamp(g % 8 * 64 + r, 0.0, 511.0);
+				// float y = clamp(floor(g/8.0f) + b * 8, 0.0, 511.0);
+				// uchar4 lutPoint = rsGetElementAt_uchar4(lut, x, y);
+
 				// find the location of the pixel in our lookup table
-				lutx := int((c.B/4%8)*64 + c.R/4)
-				luty := int(math.Floor(float64(c.B/4)/8)*64 + float64(c.G/4))
+				lutx := clamp(int(c.G%8*64+c.R), 511)
+				luty := clamp(int(math.Floor(float64(c.G)/8)+float64(c.B)*8), 511)
 
 				pixel := effect.At(lutx, luty)
 				lut := rgba.Convert(pixel).(color.RGBA)
@@ -121,4 +126,11 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	})
 
 	return out, nil
+}
+
+func clamp(val, max int) int {
+	if val > max {
+		return max
+	}
+	return val
 }
