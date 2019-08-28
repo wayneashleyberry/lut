@@ -1,13 +1,3 @@
-```diff
-var server = server.Server{
-		IPStack:   envSystem.IPStackConfig,
-		Logger:    log,
-		Service:   ipStackService.IPStackService{},
--		NetClient: netClient}
-+		NetClient: netClient,
-+ }
-```
-
 > LUT contains command-line tools and Go packages for applying colour adjustments to images using lookup tables.
 
 [![wercker status](https://app.wercker.com/status/d6c0d4f2a9fbe670e8a1b11ad161a053/s/master "wercker status")](https://app.wercker.com/project/byKey/d6c0d4f2a9fbe670e8a1b11ad161a053)
