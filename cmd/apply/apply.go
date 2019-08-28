@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/overhq/lut/pkg/cubelut"
+	"github.com/overhq/lut/pkg/haldlut"
 	"github.com/overhq/lut/pkg/imagelut"
 	"github.com/overhq/lut/pkg/trilinear"
 	"github.com/overhq/lut/pkg/util"
@@ -25,6 +26,7 @@ func Command() *cobra.Command {
 	var lutfile, outfile string
 	var intensity float64
 	var interp string
+	var isHald bool
 
 	cmd := &cobra.Command{
 		Use:   "apply [source.png] --lut sepia.png --out image.png --interp none",
@@ -101,9 +103,19 @@ func Command() *cobra.Command {
 				case "tetra":
 					util.TODO()
 				case "none":
-					img, err := imagelut.Apply(srcimg, lutimg, intensity)
-					if err != nil {
-						util.Exit(err)
+					var img image.Image
+					var err error
+
+					if isHald {
+						img, err = haldlut.Apply(srcimg, lutimg, intensity)
+						if err != nil {
+							util.Exit(err)
+						}
+					} else {
+						img, err = imagelut.Apply(srcimg, lutimg, intensity)
+						if err != nil {
+							util.Exit(err)
+						}
 					}
 
 					out = img
@@ -123,6 +135,7 @@ func Command() *cobra.Command {
 
 	cmd.Flags().Float64VarP(&intensity, "intensity", "", 1, "Intensity of the applied effect")
 	cmd.Flags().StringVarP(&interp, "interp", "i", "tri", "Interpolation")
+	cmd.Flags().BoolVarP(&isHald, "hald", "", false, "Image uses HALD packaging")
 
 	// Required flags
 	cmd.Flags().StringVarP(&lutfile, "lut", "", "", "Path to LUT [required]")
