@@ -117,9 +117,9 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 				pb = pb / 128
 
 				fmt.Println(
-					"R:", c.R, "G:", c.G, "B:", c.B,
+					"(", c.R, c.G, c.B, ")",
 					"{", int(lutx), ",", int(luty), "}",
-					"R:", pr, "G:", pg, "B:", pb,
+					"(", pr, pg, pb, ")",
 				)
 
 				out.Set(x, y, pixel)
