@@ -4,7 +4,7 @@
 
 This command-line tool and packages were written to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.
 
-There are tons of free LUT's available online, [LUTHOUSE](https://www.luthouse.com/free-luts) has some of my favourite.
+There are tons of free LUT's available online, [luthouse.com](https://www.luthouse.com/free-luts) is a great example.
 
 ### Quickstart
 
