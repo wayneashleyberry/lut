@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/overhq/lut/cmd/apply"
 	"github.com/overhq/lut/cmd/convert"
@@ -16,9 +15,6 @@ var date string
 func main() {
 	root := &cobra.Command{
 		Use: "lut",
-		Run: func(cmd *cobra.Command, args []string) {
-			_ = cmd.Usage()
-		},
 	}
 
 	root.AddCommand(
@@ -34,16 +30,7 @@ func main() {
 		},
 	})
 
-	var verbose bool
-	root.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-
-	t := time.Now()
-
 	if err := root.Execute(); err != nil {
 		util.Exit(err)
-	}
-
-	if verbose {
-		fmt.Println(time.Since(t))
 	}
 }
