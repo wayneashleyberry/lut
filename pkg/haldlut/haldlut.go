@@ -87,7 +87,10 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	})
 
 	space := &image.NRGBA{}
-	model := space.ColorModel()
+	nrgba := space.ColorModel()
+
+	space2 := &image.RGBA{}
+	rgba := space2.ColorModel()
 
 	width, height := bounds.Dx(), bounds.Dy()
 	parallel.Line(height, func(start, end int) {
@@ -96,13 +99,14 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 				// not all images use the same colour space, so ensure we convert
 				// them all to nrgba to be consistent with our output
 				px := src.At(x, y)
-				c := model.Convert(px).(color.NRGBA)
+				c := nrgba.Convert(px).(color.NRGBA)
 
 				// find the location of the pixel in our lookup table
 				lutx := int((c.B/4%8)*64 + c.R/4)
 				luty := int(math.Floor(float64(c.B/4)/8)*64 + float64(c.G/4))
 
-				lut := effect.At(lutx, luty).(color.RGBA)
+				pixel := effect.At(lutx, luty)
+				lut := rgba.Convert(pixel).(color.RGBA)
 
 				// create our output colour, adjusted according to the intensity
 				o := color.NRGBA{}
