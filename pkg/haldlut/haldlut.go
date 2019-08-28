@@ -107,8 +107,8 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 				// uchar4 lutPoint = rsGetElementAt_uchar4(lut, x, y);
 
 				// find the location of the pixel in our lookup table
-				lutx := clamp(int(c.G%8*64+c.R), 511)
-				luty := clamp(int(math.Floor(float64(c.G)/8)+float64(c.B)*8), 511)
+				lutx := clamp(int(c.G%8*64+c.R), 0, 511)
+				luty := clamp(int(math.Floor(float64(c.G)/8)+float64(c.B)*8), 0, 511)
 
 				pixel := effect.At(lutx, luty)
 				lut := rgba.Convert(pixel).(color.RGBA)
@@ -128,9 +128,12 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	return out, nil
 }
 
-func clamp(val, max int) int {
+func clamp(val, min, max int) int {
 	if val > max {
 		return max
+	}
+	if val < min {
+		return min
 	}
 	return val
 }
