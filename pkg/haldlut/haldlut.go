@@ -2,6 +2,7 @@ package haldlut
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"math"
@@ -111,6 +112,12 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 
 				pixel := effect.At(int(lutx), int(luty))
 				lut := rgba.Convert(pixel).(color.RGBA)
+
+				fmt.Println(
+					"R:", c.R, "G:", c.G, "B:", c.B,
+					"(", int(lutx), ",", int(luty), ")",
+					"R:", lut.R, "G:", lut.G, "B:", lut.B,
+				)
 
 				// create our output colour, adjusted according to the intensity
 				o := color.NRGBA{}
