@@ -46,6 +46,9 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 
 				c, _ := colorful.MakeColor(px)
 				r, g, b := c.RGB255()
+				r /= 4
+				g /= 4
+				b /= 4
 
 				lutx := (g%8)*64 + r
 				luty := math.Floor(float64(g)/8) + float64(b)*8
