@@ -2,11 +2,10 @@ package haldlut
 
 import (
 	"errors"
-	"fmt"
 	"image"
-	"image/color"
 	"math"
 
+	"github.com/lucasb-eyer/go-colorful"
 	"github.com/overhq/lut/pkg/colorcube"
 	"github.com/overhq/lut/pkg/parallel"
 )
@@ -18,60 +17,12 @@ func FromColorCube(cube colorcube.Cube) image.Image {
 		image.Point{cube.Size * 8, cube.Size * 8},
 	})
 
-	for z := 0; z < cube.Size; z++ {
-		for x := 0; x < cube.Size; x++ {
-			for y := 0; y < cube.Size; y++ {
-				imgx := (z % 8 * cube.Size) + x
-				imgy := (z / 8 * cube.Size) + y
-				rgb := cube.Get(x, y, z)
-				out.SetNRGBA(imgx, imgy, color.NRGBA{
-					R: uint8(rgb[0] * 0xff),
-					G: uint8(rgb[1] * 0xff),
-					B: uint8(rgb[2] * 0xff),
-					A: 0xff,
-				})
-			}
-		}
-	}
-
 	return out
 }
 
 // Parse implementation
 func Parse(src image.Image) (colorcube.Cube, error) {
-	// hardcoded defaults
-	size := 64
-	dmin := []float64{0, 0, 0}
-	dmax := []float64{1, 1, 1}
-
-	cube := colorcube.New(size, dmin, dmax)
-
-	bounds := src.Bounds()
-	if bounds.Max.X != 512 || bounds.Max.Y != 512 {
-		return cube, errors.New("invalid image size")
-	}
-
-	space := &image.NRGBA{}
-	model := space.ColorModel()
-
-	for z := 0; z < size; z++ {
-		for x := 0; x < size; x++ {
-			for y := 0; y < size; y++ {
-				imgx := (z % 8 * 64) + x
-				imgy := (z / 8 * 64) + y
-				px := src.At(imgx, imgy)
-				c := model.Convert(px).(color.NRGBA)
-
-				cube.Set(x, y, z, []float64{
-					float64(c.R) / 0xff,
-					float64(c.G) / 0xff,
-					float64(c.B) / 0xff,
-				})
-			}
-		}
-	}
-
-	return cube, nil
+	return colorcube.Cube{}, errors.New("not yet implemented")
 }
 
 // Apply colour transformations to an image from the provided lookup table
@@ -87,43 +38,20 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 		image.Point{bounds.Max.X, bounds.Max.Y},
 	})
 
-	space := &image.NRGBA{}
-	nrgba := space.ColorModel()
-
-	space2 := &image.RGBA{}
-	rgba := space2.ColorModel()
-
 	width, height := bounds.Dx(), bounds.Dy()
 	parallel.Line(height, func(start, end int) {
 		for y := start; y < end; y++ {
 			for x := 0; x < width; x++ {
-				// not all images use the same colour space, so ensure we convert
-				// them all to nrgba to be consistent with our output
 				px := src.At(x, y)
-				c := nrgba.Convert(px).(color.NRGBA)
 
-				// float x = g % 8 * 64 + r
-				// float y = floor(g/8.0f) + b * 8
+				c, _ := colorful.MakeColor(px)
+				r, g, b := c.RGB255()
 
-				// find the location of the pixel in our lookup table
-				lutx := (c.G%8)*64 + c.R
-				luty := math.Floor(float64(c.G)/8) + float64(c.B)*8
+				lutx := (g%8)*64 + r
+				luty := math.Floor(float64(g)/8) + float64(b)*8
 
 				at := effect.At(int(lutx), int(luty))
-				lut := rgba.Convert(at).(color.RGBA)
-
-				// create our output colour, adjusted according to the intensity
-				o := color.NRGBA{}
-				o.R = uint8(float64(c.R)*(1-intensity) + float64(lut.R)*intensity)
-				o.G = uint8(float64(c.G)*(1-intensity) + float64(lut.G)*intensity)
-				o.B = uint8(float64(c.B)*(1-intensity) + float64(lut.B)*intensity)
-				o.A = c.A
-
-				fmt.Println(
-					"(", c.R, c.G, c.B, ")",
-					"{", lutx, ",", luty, "}",
-					"(", o.R, o.G, o.B, ")",
-				)
+				o, _ := colorful.MakeColor(at)
 
 				out.Set(x, y, o)
 			}
