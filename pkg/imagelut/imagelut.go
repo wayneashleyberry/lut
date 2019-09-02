@@ -20,9 +20,9 @@ func FromColorCube(cube colorcube.Cube) image.Image {
 	for z := 0; z < cube.Size; z++ {
 		for x := 0; x < cube.Size; x++ {
 			for y := 0; y < cube.Size; y++ {
+				rgb := cube.Get(x, y, z)
 				imgx := (z % 8 * cube.Size) + x
 				imgy := (z / 8 * cube.Size) + y
-				rgb := cube.Get(x, y, z)
 				out.SetNRGBA(imgx, imgy, color.NRGBA{
 					R: uint8(rgb[0] * 0xff),
 					G: uint8(rgb[1] * 0xff),
@@ -99,10 +99,10 @@ func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 				c := model.Convert(px).(color.NRGBA)
 
 				// find the location of the pixel in our lookup table
-				lutx := int((c.B/4%8)*64 + c.R/4)
-				luty := int(math.Floor(float64(c.B/4)/8)*64 + float64(c.G/4))
+				lutx := (c.B/4%8)*64 + c.R/4
+				luty := math.Floor(float64(c.B/4)/8)*64 + float64(c.G/4)
 
-				lut := effect.At(lutx, luty).(color.RGBA)
+				lut := effect.At(int(lutx), int(luty)).(color.RGBA)
 
 				// create our output colour, adjusted according to the intensity
 				o := color.NRGBA{}
