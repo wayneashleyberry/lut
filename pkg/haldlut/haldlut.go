@@ -12,16 +12,13 @@ import (
 
 // FromColorCube will create an image from a color cube
 func FromColorCube(cube colorcube.Cube) image.Image {
-	out := image.NewNRGBA(image.Rectangle{
-		image.Point{0, 0},
-		image.Point{cube.Size * 8, cube.Size * 8},
-	})
-
-	return out
+	// TODO
+	return image.NewNRGBA(image.Rectangle{})
 }
 
 // Parse implementation
 func Parse(src image.Image) (colorcube.Cube, error) {
+	// TODO
 	return colorcube.Cube{}, errors.New("not yet implemented")
 }
 
