@@ -42,7 +42,7 @@ go run main.go
 
 ### Supported Features
 
-- 3D LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf)
+- 3D LUT's stored in the [`.cube` format](https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf) (recommended)
 - Squar image LUT's stored in 512x512 `jpeg` or `png` images
 - Filter intensity
 - Trilinear interpolation
