@@ -1,0 +1,6 @@
+main
+*.swp
+dist
+.DS_Store
+test.png
+test*.png

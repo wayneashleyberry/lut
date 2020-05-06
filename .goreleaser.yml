@@ -1,0 +1,33 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+    - rm -rf dist
+    - go mod download
+    - golangci-lint run
+    - go test ./... -race
+    - go mod tidy
+
+builds:
+  - binary: lut
+
+brew:
+  github:
+    owner: overhq
+    name: homebrew-tap
+
+  # Allows you to set a custom download strategy.
+  download_strategy: GitHubPrivateRepositoryReleaseDownloadStrategy
+
+  # Allows you to add a custom require_relative at the top of the formula template
+  custom_require: "../custom_download_strategy"
+
+  # Folder inside the repository to put the formula.
+  folder: Formula
+
+  # Your app's homepage.
+  homepage: "https://github.com/wayneashleyberry/lut"
+
+  # So you can `brew test` your formula.
+  test: |
+    system "#{bin}/lut version"
