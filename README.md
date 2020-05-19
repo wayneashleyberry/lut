@@ -4,6 +4,10 @@
 
 > LUT contains command-line tools and Go packages for applying colour adjustments to images using lookup tables. [I gave a talk on the subject at London Gophers.](https://www.youtube.com/watch?v=KVmDATg2mCE)
 
+[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/github.com/wayneashleyberry/lut?tab=overview)
+![go](https://github.com/wayneashleyberry/lut/workflows/go/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wayneashleyberry/lut)](https://goreportcard.com/report/github.com/wayneashleyberry/lut)
+
 ### Motivation
 
 This command-line tool and packages were written to inspect LUT's locally, and provide basic server-side rendering. This is most likely a bad idea, and you should probably be doing colour manipulations in OpenGL or a similar graphics programming framework.

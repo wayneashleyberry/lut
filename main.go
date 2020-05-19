@@ -35,6 +35,7 @@ func main() {
 	})
 
 	var verbose bool
+
 	root.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 
 	t := time.Now()

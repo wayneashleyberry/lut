@@ -13,3 +13,7 @@ linters:
     - maligned
     - interfacer
     - gochecknoinits
+    - gomnd
+    - goerr113
+    - funlen
+    - gocognit

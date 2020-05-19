@@ -10,7 +10,7 @@ import (
 	"github.com/wayneashleyberry/lut/pkg/parallel"
 )
 
-// FromColorCube will create an image from a color cube
+// FromColorCube will create an image from a color cube.
 func FromColorCube(cube colorcube.Cube) image.Image {
 	out := image.NewNRGBA(image.Rectangle{
 		image.Point{0, 0},
@@ -23,6 +23,7 @@ func FromColorCube(cube colorcube.Cube) image.Image {
 				imgx := (z % 8 * cube.Size) + x
 				imgy := (z / 8 * cube.Size) + y
 				rgb := cube.Get(x, y, z)
+
 				out.SetNRGBA(imgx, imgy, color.NRGBA{
 					R: uint8(rgb[0] * 0xff),
 					G: uint8(rgb[1] * 0xff),
@@ -36,7 +37,7 @@ func FromColorCube(cube colorcube.Cube) image.Image {
 	return out
 }
 
-// Parse implementation
+// Parse implementation.
 func Parse(src image.Image) (colorcube.Cube, error) {
 	// hardcoded defaults
 	size := 64
@@ -73,7 +74,7 @@ func Parse(src image.Image) (colorcube.Cube, error) {
 	return cube, nil
 }
 
-// Apply colour transformations to an image from the provided lookup table
+// Apply colour transformations to an image from the provided lookup table.
 func Apply(src, effect image.Image, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")

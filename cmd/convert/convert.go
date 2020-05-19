@@ -16,7 +16,7 @@ import (
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
-// Command will create a new convert command
+// Command will create a new convert command.
 func Command() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "convert [source.png] target.cube",
@@ -70,7 +70,7 @@ func Command() *cobra.Command {
 
 				f.Title = name
 
-				err := ioutil.WriteFile(out, f.Bytes(), 0644)
+				err := ioutil.WriteFile(out, f.Bytes(), 0600)
 				if err != nil {
 					util.Exit(err)
 				}

@@ -17,7 +17,7 @@ import (
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
-// CubeFile implementation
+// CubeFile implementation.
 type CubeFile struct {
 	Dimensions int
 	DomainMax  []float64 // DOMAIN_MAX
@@ -29,7 +29,7 @@ type CubeFile struct {
 	B          []float64
 }
 
-// FromColorCube will create a cube file from a color cube
+// FromColorCube will create a cube file from a color cube.
 func FromColorCube(cube colorcube.Cube) CubeFile {
 	r := make([]float64, cube.Size*cube.Size*cube.Size)
 	g := make([]float64, cube.Size*cube.Size*cube.Size)
@@ -56,7 +56,7 @@ func FromColorCube(cube colorcube.Cube) CubeFile {
 	}
 }
 
-// Parse will parse an io.Reader and return a CubeFile
+// Parse will parse an io.Reader and return a CubeFile.
 func Parse(r io.Reader) (CubeFile, error) {
 	o := CubeFile{}
 
@@ -85,31 +85,40 @@ func Parse(r io.Reader) (CubeFile, error) {
 			s := strings.ReplaceAll(line, "TITLE", "")
 			s = strings.ReplaceAll(s, `"`, "")
 			o.Title = strings.TrimSpace(s)
+
 			continue
 		}
 
 		if strings.HasPrefix(line, "DOMAIN_MIN") {
 			s := strings.ReplaceAll(line, "DOMAIN_MIN", "")
+
 			min := util.ParseFloats(s, 8)
+
 			if len(min) != 3 {
 				return o, errors.New("invalid domain min values")
 			}
+
 			o.DomainMin = min
+
 			continue
 		}
 
 		if strings.HasPrefix(line, "DOMAIN_MAX") {
 			s := strings.ReplaceAll(line, "DOMAIN_MAX", "")
+
 			max := util.ParseFloats(s, 8)
 			if len(max) != 3 {
 				return o, errors.New("invalid domain max values")
 			}
+
 			o.DomainMax = max
+
 			continue
 		}
 
 		if strings.HasPrefix(line, "LUT_3D_SIZE") {
 			s := strings.ReplaceAll(line, "LUT_3D_SIZE ", "")
+
 			n, err := strconv.ParseInt(s, 0, 64)
 			if err != nil {
 				return o, err
@@ -120,6 +129,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 			o.R = make([]float64, n*n*n)
 			o.G = make([]float64, n*n*n)
 			o.B = make([]float64, n*n*n)
+
 			continue
 		}
 
@@ -129,6 +139,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 			o.G[i] = rgb[1]
 			o.B[i] = rgb[2]
 			i++
+
 			continue
 		}
 	}
@@ -144,7 +155,7 @@ func Parse(r io.Reader) (CubeFile, error) {
 	return o, nil
 }
 
-// Cube will convert a cube file into a color cube
+// Cube will convert a cube file into a color cube.
 func (cf CubeFile) Cube() colorcube.Cube {
 	cube := colorcube.New(cf.Size, cf.DomainMin, cf.DomainMax)
 
@@ -158,7 +169,7 @@ func (cf CubeFile) Cube() colorcube.Cube {
 	return cube
 }
 
-// Bytes implementation
+// Bytes implementation.
 func (cf CubeFile) Bytes() []byte {
 	var b bytes.Buffer
 
@@ -175,7 +186,7 @@ DOMAIN_MAX %.1f %.1f %.1f
 	return b.Bytes()
 }
 
-// Apply implementation
+// Apply implementation.
 func (cf CubeFile) Apply(src image.Image, intensity float64) (image.Image, error) {
 	if intensity < 0 || intensity > 1 {
 		return src, errors.New("intensity must be between 0 and 1")

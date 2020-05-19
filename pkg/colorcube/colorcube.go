@@ -4,7 +4,7 @@
 // to be initialised to a specific size to keep things efficient.
 package colorcube
 
-// Cube implementation
+// Cube implementation.
 type Cube struct {
 	Size      int
 	Data      map[int]map[int]map[int][]float64
@@ -12,16 +12,18 @@ type Cube struct {
 	DomainMax []float64
 }
 
-// New will create a new Cube struct with the given size
+// New will create a new Cube struct with the given size.
 func New(size int, dmin, dmax []float64) Cube {
 	d := make(map[int]map[int]map[int][]float64, size)
 
 	for x := 0; x < size; x++ {
 		yy := make(map[int]map[int][]float64, size)
+
 		for y := 0; y < size; y++ {
 			z := make(map[int][]float64, size)
 			yy[y] = z
 		}
+
 		d[x] = yy
 	}
 
@@ -33,12 +35,12 @@ func New(size int, dmin, dmax []float64) Cube {
 	}
 }
 
-// Get will return the color at a given point
+// Get will return the color at a given point.
 func (c Cube) Get(x, y, z int) []float64 {
 	return c.Data[x][y][z]
 }
 
-// Set will set a color for the given point
+// Set will set a color for the given point.
 func (c Cube) Set(x, y, z int, val []float64) {
 	c.Data[x][y][z] = val
 }

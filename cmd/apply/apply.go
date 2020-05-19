@@ -15,15 +15,17 @@ import (
 	"github.com/wayneashleyberry/lut/pkg/util"
 )
 
-// Error types
+// Sentinel error values.
 var (
 	ErrInvalidInterpolation = errors.New("invalid interpolation, accepted values are `none`, `tri` and `interp`")
 )
 
-// Command will create a new "apply" command
+// Command will create a new "apply" command.
 func Command() *cobra.Command {
 	var lutfile, outfile string
+
 	var intensity float64
+
 	var interp string
 
 	cmd := &cobra.Command{
@@ -64,7 +66,7 @@ func Command() *cobra.Command {
 
 					out = img
 				case "tetra":
-					util.TODO()
+					panic("not implemented")
 				case "none":
 					img, err := cubefile.Apply(srcimg, intensity)
 					if err != nil {
@@ -99,7 +101,7 @@ func Command() *cobra.Command {
 
 					out = img
 				case "tetra":
-					util.TODO()
+					panic("not implemented")
 				case "none":
 					img, err := imagelut.Apply(srcimg, lutimg, intensity)
 					if err != nil {
