@@ -7,6 +7,7 @@
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/github.com/wayneashleyberry/lut?tab=overview)
 ![Go](https://github.com/wayneashleyberry/lut/workflows/Go/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/wayneashleyberry/lut)](https://goreportcard.com/report/github.com/wayneashleyberry/lut)
+![CodeQL](https://github.com/wayneashleyberry/lut/workflows/CodeQL/badge.svg)
 
 ### Motivation
 
