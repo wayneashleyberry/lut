@@ -17,12 +17,6 @@ brews:
       owner: wayneashleyberry
       name: lut
   
-    # Allows you to set a custom download strategy.
-    download_strategy: GitHubPrivateRepositoryReleaseDownloadStrategy
-  
-    # Allows you to add a custom require_relative at the top of the formula template
-    custom_require: "../custom_download_strategy"
-  
     # Folder inside the repository to put the formula.
     folder: Formula
   
@@ -30,5 +24,4 @@ brews:
     homepage: "https://github.com/wayneashleyberry/lut"
   
     # So you can `brew test` your formula.
-    test: |
-      system "#{bin}/lut version"
+    test: system "#{bin}/lut version"
