@@ -4,16 +4,3 @@
 # For more information, see: https://git.io/fplQG
 run:
   tests: false
-
-linters:
-  enable-all: true
-  disable:
-    - lll
-    - gochecknoglobals
-    - maligned
-    - interfacer
-    - gochecknoinits
-    - gomnd
-    - goerr113
-    - funlen
-    - gocognit
