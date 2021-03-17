@@ -14,8 +14,8 @@ builds:
 brews:
   -
     tap:
-      owner: overhq
-      name: homebrew-tap
+      owner: wayneashleyberry
+      name: lut
   
     # Allows you to set a custom download strategy.
     download_strategy: GitHubPrivateRepositoryReleaseDownloadStrategy
